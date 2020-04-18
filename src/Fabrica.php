@@ -28,7 +28,12 @@ class Fabrica
 		$entity = new $class;
 
 		foreach ($attributes as $attribute => $value) {
-			$entity->$attribute = $value;
+			if (strpos($attribute, '@') === 0) {
+				$method = substr($attribute, 1);
+				$entity->$method($value);
+			} else {
+				$entity->$attribute = $value;
+			}
 		}
 
 		if ($this->store) {

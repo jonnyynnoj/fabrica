@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class FabricaTest extends TestCase
 {
 	/** @test */
-	public function i_can_define_and_create_a_factory()
+	public function it_can_define_and_create_a_factory_using_properties()
 	{
 		$fabrica = new Fabrica();
 		$fabrica->define(User::class, function () {
@@ -23,5 +23,22 @@ class FabricaTest extends TestCase
 
 		self::assertEquals('Test', $user->firstName);
 		self::assertEquals('User', $user->lastName);
+	}
+
+	/** @test */
+	public function it_can_define_and_create_a_factory_using_methods()
+	{
+		$fabrica = new Fabrica();
+		$fabrica->define(User::class, function () {
+			return [
+				'@setFirstName' => 'Test',
+				'@setLastName' => 'User',
+			];
+		});
+
+		$user = $fabrica->create(User::class);
+
+		self::assertEquals('Test', $user->getFirstName());
+		self::assertEquals('User', $user->getLastName());
 	}
 }
