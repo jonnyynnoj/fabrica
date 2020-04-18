@@ -1,0 +1,30 @@
+{
+	"name": "fabrica/fabrica",
+	"description": "Library to create entity factories for testing",
+	"type": "library",
+	"keywords": [
+		"testing",
+		"factory"
+	],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jonathan Taylor",
+			"email": "jonny.taylor5@gmail.com"
+		}
+	],
+	"require": {},
+	"require-dev": {
+		"phpunit/phpunit": "^7.5"
+	},
+	"autoload": {
+		"psr-4": {
+			"Fabrica\\Fabrica\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Fabrica\\Fabrica\\Test\\": "test/"
+		}
+	}
+}
