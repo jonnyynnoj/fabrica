@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use Fabrica\Fabrica\Fabrica;
+use Fabrica\Fabrica\Test\Entities\Post;
 use Fabrica\Fabrica\Test\Entities\User;
 use Fabrica\Fabrica\Store\DoctrineStore;
 use PHPUnit\Framework\TestCase;
@@ -51,5 +52,39 @@ class DoctrineStoreTest extends TestCase
 		self::assertEquals('Test', $users[0]->firstName);
 		self::assertEquals('User', $users[0]->lastName);
 		self::assertEquals($user, $users[0]);
+	}
+
+	/** @test */
+	public function it_can_create_many_to_one_relation()
+	{
+		$doctrineStore = new DoctrineStore($this->entityManager);
+		$fabrica = new Fabrica($doctrineStore);
+
+		$fabrica->define(User::class, function () {
+			return [
+				'firstName' => 'Test',
+				'lastName' => 'User',
+			];
+		});
+
+		$fabrica->define(Post::class, function () use ($fabrica) {
+			return [
+				'title' => 'My first post',
+				'body' => 'Something revolutionary',
+				'@setUser' => $fabrica->create(User::class)
+			];
+		});
+
+		$fabrica->create(Post::class);
+
+		$repository = $this->entityManager->getRepository(Post::class);
+		$post = $repository->findOneBy([]);
+
+		self::assertInstanceOf(Post::class, $post);
+		self::assertEquals('My first post', $post->title);
+
+		self::assertInstanceOf(User::class, $post->getUser());
+		self::assertEquals('Test', $post->getUser()->getFirstName());
+		self::assertEquals('User', $post->getUser()->getLastName());
 	}
 }

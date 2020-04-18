@@ -2,6 +2,8 @@
 
 namespace Fabrica\Fabrica\Test\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * @Entity
  * @Table(name="users")
@@ -19,6 +21,14 @@ class User
 
 	/** @Column(name="last_name") */
 	public $lastName = '';
+
+	/** @OneToMany(targetEntity="Fabrica\Fabrica\Test\Entities\Post", mappedBy="user") */
+	public $posts;
+
+	public function __construct()
+	{
+		$this->posts = new ArrayCollection();
+	}
 
 	public function getFirstName(): string
 	{
@@ -38,5 +48,10 @@ class User
 	public function setLastName(string $lastName)
 	{
 		$this->lastName = $lastName;
+	}
+
+	public function addPost(Post $post)
+	{
+		$this->posts->add($post);
 	}
 }
