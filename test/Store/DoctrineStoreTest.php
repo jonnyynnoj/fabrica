@@ -44,14 +44,15 @@ class DoctrineStoreTest extends TestCase
 			];
 		});
 
-		$user = $fabrica->create(User::class);
+		$fabrica->create(User::class);
 
+		$this->entityManager->clear();
 		$repository = $this->entityManager->getRepository(User::class);
 		$users = $repository->findAll();
+
 		self::assertCount(1, $users);
 		self::assertEquals('Test', $users[0]->firstName);
 		self::assertEquals('User', $users[0]->lastName);
-		self::assertEquals($user, $users[0]);
 	}
 
 	/** @test */
@@ -77,6 +78,7 @@ class DoctrineStoreTest extends TestCase
 
 		$fabrica->create(Post::class);
 
+		$this->entityManager->clear();
 		$repository = $this->entityManager->getRepository(Post::class);
 		$post = $repository->findOneBy([]);
 
