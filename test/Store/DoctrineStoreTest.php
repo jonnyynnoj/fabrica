@@ -9,10 +9,13 @@ use Fabrica\Fabrica;
 use Fabrica\Test\Entities\Post;
 use Fabrica\Test\Entities\User;
 use Fabrica\Store\DoctrineStore;
+use Fabrica\Test\TestEntities;
 use PHPUnit\Framework\TestCase;
 
 class DoctrineStoreTest extends TestCase
 {
+	use TestEntities;
+
 	/** @var EntityManager */
 	private $entityManager;
 
@@ -40,13 +43,7 @@ class DoctrineStoreTest extends TestCase
 	/** @test */
 	public function it_saves_entity_to_database_on_creation()
 	{
-		$this->fabrica->define(User::class, function () {
-			return [
-				'firstName' => 'Test',
-				'lastName' => 'User',
-				'age' => 36,
-			];
-		});
+		$this->defineUser();
 
 		$this->fabrica->create(User::class);
 
@@ -62,13 +59,7 @@ class DoctrineStoreTest extends TestCase
 	/** @test */
 	public function it_can_create_many_to_one_relation()
 	{
-		$this->fabrica->define(User::class, function () {
-			return [
-				'firstName' => 'Test',
-				'lastName' => 'User',
-				'age' => 36,
-			];
-		});
+		$this->defineUser();
 
 		$this->fabrica->define(Post::class, function () {
 			return [
@@ -95,21 +86,8 @@ class DoctrineStoreTest extends TestCase
 	/** @test */
 	public function it_can_create_one_to_many_relation()
 	{
-		$this->fabrica->define(User::class, function () {
-			return [
-				'firstName' => 'Test',
-				'lastName' => 'User',
-				'age' => 36,
-				'@addPost' => $this->fabrica->create(Post::class)
-			];
-		});
-
-		$this->fabrica->define(Post::class, function () {
-			return [
-				'title' => 'My first post',
-				'body' => 'Something revolutionary',
-			];
-		});
+		$this->definePost();
+		$this->defineUser(['@addPost' => $this->fabrica->create(Post::class)]);
 
 		$this->fabrica->create(User::class);
 

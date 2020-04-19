@@ -9,18 +9,22 @@ use PHPUnit\Framework\TestCase;
 
 class FabricaTest extends TestCase
 {
+	use TestEntities;
+
+	/** @var Fabrica */
+	private $fabrica;
+
+	protected function setUp()
+	{
+		$this->fabrica = new Fabrica();
+	}
+
 	/** @test */
 	public function it_can_define_and_create_a_factory_using_properties()
 	{
-		$fabrica = new Fabrica();
-		$fabrica->define(User::class, function () {
-			return [
-				'firstName' => 'Test',
-				'lastName' => 'User',
-			];
-		});
+		$this->defineUser();
 
-		$user = $fabrica->create(User::class);
+		$user = $this->fabrica->create(User::class);
 
 		self::assertEquals('Test', $user->firstName);
 		self::assertEquals('User', $user->lastName);
@@ -29,15 +33,14 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_define_and_create_a_factory_using_methods()
 	{
-		$fabrica = new Fabrica();
-		$fabrica->define(User::class, function () {
+		$this->fabrica->define(User::class, function () {
 			return [
 				'@setFirstName' => 'Test',
 				'@setLastName' => 'User',
 			];
 		});
 
-		$user = $fabrica->create(User::class);
+		$user = $this->fabrica->create(User::class);
 
 		self::assertEquals('Test', $user->getFirstName());
 		self::assertEquals('User', $user->getLastName());
@@ -56,8 +59,7 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_override_definition_when_creating()
 	{
-		$fabrica = new Fabrica();
-		$fabrica->define(User::class, function () {
+		$this->fabrica->define(User::class, function () {
 			return [
 				'firstName' => 'Test',
 				'@setLastName' => 'User',
@@ -65,7 +67,7 @@ class FabricaTest extends TestCase
 			];
 		});
 
-		$user = $fabrica->create(User::class, [
+		$user = $this->fabrica->create(User::class, [
 			'@setFirstName' => 'Another',
 			'lastName' => 'Person',
 		]);
@@ -78,16 +80,9 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_create_multiple()
 	{
-		$fabrica = new Fabrica();
-		$fabrica->define(User::class, function () {
-			return [
-				'firstName' => 'Test',
-				'@setLastName' => 'User',
-				'age' => 47
-			];
-		});
+		$this->defineUser();
 
-		$users = $fabrica->of(User::class, 2)->create();
+		$users = $this->fabrica->of(User::class, 2)->create();
 
 		self::assertCount(2, $users);
 		self::assertContainsOnlyInstancesOf(User::class, $users);
@@ -95,31 +90,24 @@ class FabricaTest extends TestCase
 		foreach ($users as $user) {
 			self::assertEquals('Test', $user->firstName);
 			self::assertEquals('User', $user->lastName);
-			self::assertSame(47, $user->age);
+			self::assertSame(36, $user->age);
 		}
 	}
 
 	/** @test */
 	public function it_can_call_setter_for_each_element_of_array()
 	{
-		$fabrica = new Fabrica();
-		$fabrica->define(User::class, function () use ($fabrica) {
+		$this->definePost();
+		$this->fabrica->define(User::class, function () {
 			return [
 				'firstName' => 'Test',
 				'@setLastName' => 'User',
 				'age' => 47,
-				'@addPost*' => $fabrica->of(Post::class, 3)->create()
+				'@addPost*' => $this->fabrica->of(Post::class, 3)->create()
 			];
 		});
 
-		$fabrica->define(Post::class, function () {
-			return [
-				'title' => 'My first post',
-				'body' => 'Something revolutionary',
-			];
-		});
-
-		$user = $fabrica->create(User::class);
+		$user = $this->fabrica->create(User::class);
 
 		self::assertCount(3, $user->posts);
 	}
@@ -131,11 +119,10 @@ class FabricaTest extends TestCase
 	 */
 	public function it_throws_exception_if_method_invalid()
 	{
-		$fabrica = new Fabrica();
-		$fabrica->define(User::class, function () use ($fabrica) {
+		$this->fabrica->define(User::class, function () {
 			return ['@invalidMethod' => 'Test'];
 		});
 
-		$fabrica->create(User::class);
+		$this->fabrica->create(User::class);
 	}
 }
