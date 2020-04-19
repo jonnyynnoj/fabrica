@@ -3,6 +3,7 @@
 namespace Fabrica\Test;
 
 use Fabrica\Fabrica;
+use Fabrica\Test\Entities\Post;
 use Fabrica\Test\Entities\User;
 use PHPUnit\Framework\TestCase;
 
@@ -96,5 +97,30 @@ class FabricaTest extends TestCase
 			self::assertEquals('User', $user->lastName);
 			self::assertSame(47, $user->age);
 		}
+	}
+
+	/** @test */
+	public function it_can_call_setter_for_each_element_of_array()
+	{
+		$fabrica = new Fabrica();
+		$fabrica->define(User::class, function () use ($fabrica) {
+			return [
+				'firstName' => 'Test',
+				'@setLastName' => 'User',
+				'age' => 47,
+				'@addPost*' => $fabrica->of(Post::class, 3)->create()
+			];
+		});
+
+		$fabrica->define(Post::class, function () {
+			return [
+				'title' => 'My first post',
+				'body' => 'Something revolutionary',
+			];
+		});
+
+		$user = $fabrica->create(User::class);
+
+		self::assertCount(3, $user->posts);
 	}
 }

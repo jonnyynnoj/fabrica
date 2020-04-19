@@ -45,8 +45,7 @@ class Builder
 
 		foreach ($attributes as $attribute => $value) {
 			if (strpos($attribute, '@') === 0) {
-				$method = substr($attribute, 1);
-				$entity->$method($value);
+				$this->handleMethodCall($entity, $attribute, $value);
 			} else {
 				$entity->$attribute = $value;
 			}
@@ -57,5 +56,21 @@ class Builder
 		}
 
 		return $entity;
+	}
+
+	private function handleMethodCall($entity, $attribute, $value)
+	{
+		$method = substr($attribute, 1);
+		if (substr($method, -1) !== '*') {
+			$entity->$method($value);
+			return;
+		}
+
+		if (!is_array($value)) {
+			throw new FabricaException('* method suffix can only be used for array values');
+		}
+
+		$method = substr($method, 0, -1);
+		array_map([$entity, $method], $value);
 	}
 }
