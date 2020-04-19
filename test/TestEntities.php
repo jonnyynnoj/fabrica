@@ -2,11 +2,15 @@
 
 namespace Fabrica\Test;
 
+use Fabrica\Fabrica;
 use Fabrica\Test\Entities\Post;
 use Fabrica\Test\Entities\User;
 
 trait TestEntities
 {
+	/** @var Fabrica */
+	private $fabrica;
+
 	private function defineUser(array $data = [])
 	{
 		$this->fabrica->define(User::class, function () use ($data) {

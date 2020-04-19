@@ -19,9 +19,6 @@ class DoctrineStoreTest extends TestCase
 	/** @var EntityManager */
 	private $entityManager;
 
-	/** @var Fabrica */
-	private $fabrica;
-
 	protected function setUp()
 	{
 		$db = [
@@ -92,7 +89,6 @@ class DoctrineStoreTest extends TestCase
 		$this->fabrica->create(User::class);
 
 		$this->entityManager->clear();
-
 		$repository = $this->entityManager->getRepository(User::class);
 		$user = $repository->findOneBy([]);
 

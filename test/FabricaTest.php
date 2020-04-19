@@ -11,9 +11,6 @@ class FabricaTest extends TestCase
 {
 	use TestEntities;
 
-	/** @var Fabrica */
-	private $fabrica;
-
 	protected function setUp()
 	{
 		$this->fabrica = new Fabrica();
