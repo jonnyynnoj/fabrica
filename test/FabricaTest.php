@@ -110,6 +110,12 @@ class FabricaTest extends TestCase
 		$user = $this->fabrica->create(User::class);
 
 		self::assertCount(3, $user->posts);
+		self::assertContainsOnlyInstancesOf(Post::class, $user->posts);
+
+		foreach ($user->posts as $post) {
+			self::assertEquals('My first post', $post->title);
+			self::assertEquals('Something revolutionary', $post->body);
+		}
 	}
 
 	/**
