@@ -73,4 +73,30 @@ class FabricaTest extends TestCase
 		self::assertEquals($user->lastName, 'Person');
 		self::assertSame($user->age, 47);
 	}
+
+	/** @test */
+	public function it_can_create_multiple()
+	{
+		$fabrica = new Fabrica();
+		$fabrica->define(User::class, function () {
+			return [
+				'firstName' => 'Test',
+				'@setLastName' => 'User',
+				'age' => 47
+			];
+		});
+
+		$users = $fabrica->from(User::class)
+			->instances(2)
+			->create();
+
+		self::assertCount(2, $users);
+		self::assertContainsOnlyInstancesOf(User::class, $users);
+
+		foreach ($users as $user) {
+			self::assertEquals('Test', $user->firstName);
+			self::assertEquals('User', $user->lastName);
+			self::assertSame(47, $user->age);
+		}
+	}
 }

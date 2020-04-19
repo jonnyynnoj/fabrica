@@ -24,26 +24,20 @@ class Fabrica
 
 	public function create(string $class, array $overrides = [])
 	{
+		return $this->from($class)->create($overrides);
+	}
+
+	public function from($class): Builder
+	{
 		if (!isset($this->defined[$class])) {
 			throw new FabricaException("No definition found for $class");
 		}
 
-		$attributes = array_merge($this->defined[$class](), $overrides);
-		$entity = new $class;
-
-		foreach ($attributes as $attribute => $value) {
-			if (strpos($attribute, '@') === 0) {
-				$method = substr($attribute, 1);
-				$entity->$method($value);
-			} else {
-				$entity->$attribute = $value;
-			}
-		}
-
-		if ($this->store) {
-			$this->store->save($entity);
-		}
-
-		return $entity;
+		return (new Builder($class, $this->defined[$class]))
+			->onCreated(function ($entity) {
+				if ($this->store) {
+					$this->store->save($entity);
+				}
+			});
 	}
 }
