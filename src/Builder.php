@@ -62,7 +62,7 @@ class Builder
 	{
 		$method = substr($attribute, 1);
 		if (substr($method, -1) !== '*') {
-			$entity->$method($value);
+			$this->applyMethodCall($entity, $method, $value);
 			return;
 		}
 
@@ -71,6 +71,18 @@ class Builder
 		}
 
 		$method = substr($method, 0, -1);
-		array_map([$entity, $method], $value);
+		array_map(function ($item) use ($entity, $method) {
+			$this->applyMethodCall($entity, $method, $item);
+		}, $value);
+	}
+
+	private function applyMethodCall($entity, $method, $value)
+	{
+		if (!is_callable([$entity, $method])) {
+			$class = get_class($entity);
+			throw new FabricaException("Method $method does not exist on $class");
+		}
+
+		$entity->$method($value);
 	}
 }

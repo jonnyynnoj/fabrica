@@ -123,4 +123,19 @@ class FabricaTest extends TestCase
 
 		self::assertCount(3, $user->posts);
 	}
+
+	/**
+	 * @test
+	 * @expectedException \Fabrica\FabricaException
+	 * @expectedExceptionMessage Method invalidMethod does not exist on Fabrica\Test\Entities\User
+	 */
+	public function it_throws_exception_if_method_invalid()
+	{
+		$fabrica = new Fabrica();
+		$fabrica->define(User::class, function () use ($fabrica) {
+			return ['@invalidMethod' => 'Test'];
+		});
+
+		$fabrica->create(User::class);
+	}
 }
