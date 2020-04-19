@@ -16,6 +16,6 @@ class DoctrineStore implements StoreInterface
 	public function save($entity)
 	{
 		$this->entityManager->persist($entity);
-		$this->entityManager->flush($entity);
+		$this->entityManager->flush();
 	}
 }
