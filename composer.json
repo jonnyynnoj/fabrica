@@ -13,6 +13,9 @@
 			"email": "jonny.taylor5@gmail.com"
 		}
 	],
+	"scripts": {
+		"test": "phpunit"
+	},
 	"require": {},
 	"require-dev": {
 		"doctrine/orm": "^2.5",
