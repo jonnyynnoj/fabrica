@@ -23,6 +23,9 @@ class User
 	/** @Column(name="last_name") */
 	public $lastName = '';
 
+	/** @Column */
+	public $age;
+
 	/** @OneToMany(targetEntity="Fabrica\Fabrica\Test\Entities\Post", mappedBy="user") */
 	public $posts;
 

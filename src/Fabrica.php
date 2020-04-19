@@ -22,13 +22,13 @@ class Fabrica
 		$this->defined[$class] = $definition;
 	}
 
-	public function create(string $class)
+	public function create(string $class, array $overrides = [])
 	{
 		if (!isset($this->defined[$class])) {
 			throw new FabricaException("No definition found for $class");
 		}
 
-		$attributes = $this->defined[$class]();
+		$attributes = array_merge($this->defined[$class](), $overrides);
 		$entity = new $class;
 
 		foreach ($attributes as $attribute => $value) {

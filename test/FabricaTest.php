@@ -51,4 +51,26 @@ class FabricaTest extends TestCase
 	{
 		(new Fabrica())->create(User::class);
 	}
+
+	/** @test */
+	public function it_can_override_definition_when_creating()
+	{
+		$fabrica = new Fabrica();
+		$fabrica->define(User::class, function () {
+			return [
+				'firstName' => 'Test',
+				'@setLastName' => 'User',
+				'age' => 47
+			];
+		});
+
+		$user = $fabrica->create(User::class, [
+			'@setFirstName' => 'Another',
+			'lastName' => 'Person',
+		]);
+
+		self::assertEquals($user->firstName, 'Another');
+		self::assertEquals($user->lastName, 'Person');
+		self::assertSame($user->age, 47);
+	}
 }
