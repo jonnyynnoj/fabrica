@@ -44,6 +44,7 @@ class DoctrineStoreTest extends TestCase
 			return [
 				'firstName' => 'Test',
 				'lastName' => 'User',
+				'age' => 36,
 			];
 		});
 
@@ -65,6 +66,7 @@ class DoctrineStoreTest extends TestCase
 			return [
 				'firstName' => 'Test',
 				'lastName' => 'User',
+				'age' => 36,
 			];
 		});
 
@@ -97,6 +99,7 @@ class DoctrineStoreTest extends TestCase
 			return [
 				'firstName' => 'Test',
 				'lastName' => 'User',
+				'age' => 36,
 				'@addPost' => $this->fabrica->create(Post::class)
 			];
 		});
