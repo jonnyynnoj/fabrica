@@ -24,6 +24,10 @@ class Fabrica
 
 	public function create(string $class)
 	{
+		if (!isset($this->defined[$class])) {
+			throw new FabricaException("No definition found for $class");
+		}
+
 		$attributes = $this->defined[$class]();
 		$entity = new $class;
 

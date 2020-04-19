@@ -41,4 +41,14 @@ class FabricaTest extends TestCase
 		self::assertEquals('Test', $user->getFirstName());
 		self::assertEquals('User', $user->getLastName());
 	}
+
+	/**
+	 * @test
+	 * @expectedException Fabrica\Fabrica\FabricaException
+	 * @expectedExceptionMessage No definition found for Fabrica\Fabrica\Test\Entities\User
+	 */
+	public function it_handles_trying_to_create_undefined_entity()
+	{
+		(new Fabrica())->create(User::class);
+	}
 }
