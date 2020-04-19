@@ -9,7 +9,8 @@ namespace Fabrica\Fabrica\Test\Entities;
 class Post
 {
 	/**
-	 * @Id @Column(type="integer")
+	 * @Id
+	 * @Column(type="integer")
 	 * @GeneratedValue
 	 */
 	public $id;

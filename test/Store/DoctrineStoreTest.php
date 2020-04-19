@@ -89,4 +89,34 @@ class DoctrineStoreTest extends TestCase
 		self::assertEquals('Test', $post->user->getFirstName());
 		self::assertEquals('User', $post->user->getLastName());
 	}
+
+	/** @test */
+	public function it_can_create_one_to_many_relation()
+	{
+		$this->fabrica->define(User::class, function () {
+			return [
+				'firstName' => 'Test',
+				'lastName' => 'User',
+				'@addPost' => $this->fabrica->create(Post::class)
+			];
+		});
+
+		$this->fabrica->define(Post::class, function () {
+			return [
+				'title' => 'My first post',
+				'body' => 'Something revolutionary',
+			];
+		});
+
+		$this->fabrica->create(User::class);
+
+		$this->entityManager->clear();
+
+		$repository = $this->entityManager->getRepository(User::class);
+		$user = $repository->findOneBy([]);
+
+		self::assertInstanceOf(User::class, $user);
+		self::assertCount(1, $user->posts);
+		self::assertInstanceOf(Post::class, $user->posts[0]);
+	}
 }

@@ -11,7 +11,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 class User
 {
 	/**
-	 * @Id @Column(type="integer")
+	 * @Id
+	 * @Column(type="integer")
 	 * @GeneratedValue
 	 */
 	public $id;
@@ -52,6 +53,7 @@ class User
 
 	public function addPost(Post $post)
 	{
+		$post->user = $this;
 		$this->posts->add($post);
 	}
 }
