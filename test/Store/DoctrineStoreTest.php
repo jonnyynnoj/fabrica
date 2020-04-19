@@ -96,4 +96,22 @@ class DoctrineStoreTest extends TestCase
 		self::assertCount(1, $user->posts);
 		self::assertInstanceOf(Post::class, $user->posts[0]);
 	}
+
+	/** @test */
+	public function it_can_create_multiple_relations()
+	{
+		$this->definePost();
+		$this->defineUser([
+			'@addPost*' => $this->fabrica->of(Post::class, 3)->create()
+		]);
+
+		$this->fabrica->create(User::class);
+
+		$this->entityManager->clear();
+		$repository = $this->entityManager->getRepository(User::class);
+		$user = $repository->findOneBy([]);
+
+		self::assertCount(3, $user->posts);
+		self::assertContainsOnlyInstancesOf(Post::class, $user->posts);
+	}
 }
