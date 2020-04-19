@@ -27,13 +27,14 @@ class Fabrica
 		return $this->from($class)->create($overrides);
 	}
 
-	public function from($class): Builder
+	public function from($class, int $instances = 1): Builder
 	{
 		if (!isset($this->defined[$class])) {
 			throw new FabricaException("No definition found for $class");
 		}
 
 		return (new Builder($class, $this->defined[$class]))
+			->instances($instances)
 			->onCreated(function ($entity) {
 				if ($this->store) {
 					$this->store->save($entity);
