@@ -16,6 +16,9 @@ class DoctrineStoreTest extends TestCase
 	/** @var EntityManager */
 	private $entityManager;
 
+	/** @var Fabrica */
+	private $fabrica;
+
 	protected function setUp()
 	{
 		$db = [
@@ -29,22 +32,22 @@ class DoctrineStoreTest extends TestCase
 		$schemaTool = new SchemaTool($this->entityManager);
 		$metaData = $this->entityManager->getMetadataFactory()->getAllMetadata();
 		$schemaTool->createSchema($metaData);
+
+		$doctrineStore = new DoctrineStore($this->entityManager);
+		$this->fabrica = new Fabrica($doctrineStore);
 	}
 
 	/** @test */
 	public function it_saves_entity_to_database_on_creation()
 	{
-		$doctrineStore = new DoctrineStore($this->entityManager);
-		$fabrica = new Fabrica($doctrineStore);
-
-		$fabrica->define(User::class, function () {
+		$this->fabrica->define(User::class, function () {
 			return [
 				'firstName' => 'Test',
 				'lastName' => 'User',
 			];
 		});
 
-		$fabrica->create(User::class);
+		$this->fabrica->create(User::class);
 
 		$this->entityManager->clear();
 		$repository = $this->entityManager->getRepository(User::class);
@@ -58,25 +61,22 @@ class DoctrineStoreTest extends TestCase
 	/** @test */
 	public function it_can_create_many_to_one_relation()
 	{
-		$doctrineStore = new DoctrineStore($this->entityManager);
-		$fabrica = new Fabrica($doctrineStore);
-
-		$fabrica->define(User::class, function () {
+		$this->fabrica->define(User::class, function () {
 			return [
 				'firstName' => 'Test',
 				'lastName' => 'User',
 			];
 		});
 
-		$fabrica->define(Post::class, function () use ($fabrica) {
+		$this->fabrica->define(Post::class, function () {
 			return [
 				'title' => 'My first post',
 				'body' => 'Something revolutionary',
-				'user' => $fabrica->create(User::class)
+				'user' => $this->fabrica->create(User::class)
 			];
 		});
 
-		$fabrica->create(Post::class);
+		$this->fabrica->create(Post::class);
 
 		$this->entityManager->clear();
 		$repository = $this->entityManager->getRepository(Post::class);
