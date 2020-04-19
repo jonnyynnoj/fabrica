@@ -20,12 +20,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Fabrica\\Fabrica\\": "src/"
+			"Fabrica\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Fabrica\\Fabrica\\Test\\": "test/"
+			"Fabrica\\Test\\": "test/"
 		}
 	},
 	"config": {

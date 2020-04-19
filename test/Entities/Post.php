@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Fabrica\Test\Entities;
+namespace Fabrica\Test\Entities;
 
 /**
  * @Entity
@@ -15,7 +15,7 @@ class Post
 	 */
 	public $id;
 
-	/** @ManyToOne(targetEntity="Fabrica\Fabrica\Test\Entities\User", inversedBy="posts") */
+	/** @ManyToOne(targetEntity="Fabrica\Test\Entities\User", inversedBy="posts") */
 	public $user;
 
 	/** @Column */

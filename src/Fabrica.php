@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Fabrica;
+namespace Fabrica;
 
-use Fabrica\Fabrica\Store\StoreInterface;
+use Fabrica\Store\StoreInterface;
 
 class Fabrica
 {

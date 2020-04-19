@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Fabrica\Test\Entities;
+namespace Fabrica\Test\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -26,7 +26,7 @@ class User
 	/** @Column */
 	public $age;
 
-	/** @OneToMany(targetEntity="Fabrica\Fabrica\Test\Entities\Post", mappedBy="user") */
+	/** @OneToMany(targetEntity="Fabrica\Test\Entities\Post", mappedBy="user") */
 	public $posts;
 
 	public function __construct()

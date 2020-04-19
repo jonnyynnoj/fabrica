@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Fabrica;
+namespace Fabrica;
 
 class FabricaException extends \Exception
 {

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Fabrica\Test;
+namespace Fabrica\Test;
 
-use Fabrica\Fabrica\Fabrica;
-use Fabrica\Fabrica\Test\Entities\User;
+use Fabrica\Fabrica;
+use Fabrica\Test\Entities\User;
 use PHPUnit\Framework\TestCase;
 
 class FabricaTest extends TestCase
@@ -44,8 +44,8 @@ class FabricaTest extends TestCase
 
 	/**
 	 * @test
-	 * @expectedException Fabrica\Fabrica\FabricaException
-	 * @expectedExceptionMessage No definition found for Fabrica\Fabrica\Test\Entities\User
+	 * @expectedException Fabrica\FabricaException
+	 * @expectedExceptionMessage No definition found for Fabrica\Test\Entities\User
 	 */
 	public function it_handles_trying_to_create_undefined_entity()
 	{
