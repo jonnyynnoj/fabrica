@@ -86,7 +86,7 @@ class FabricaTest extends TestCase
 			];
 		});
 
-		$users = $fabrica->from(User::class, 2)->create();
+		$users = $fabrica->of(User::class, 2)->create();
 
 		self::assertCount(2, $users);
 		self::assertContainsOnlyInstancesOf(User::class, $users);

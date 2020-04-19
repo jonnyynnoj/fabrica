@@ -24,10 +24,10 @@ class Fabrica
 
 	public function create(string $class, array $overrides = [])
 	{
-		return $this->from($class)->create($overrides);
+		return $this->of($class)->create($overrides);
 	}
 
-	public function from($class, int $instances = 1): Builder
+	public function of($class, int $instances = 1): Builder
 	{
 		if (!isset($this->defined[$class])) {
 			throw new FabricaException("No definition found for $class");
