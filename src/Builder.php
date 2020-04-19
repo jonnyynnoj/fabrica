@@ -4,6 +4,9 @@ namespace Fabrica;
 
 class Builder
 {
+	const IDENTIFIER_METHOD = '@';
+	const IDENTIFIER_METHOD_CALL_MULTIPLE = '*';
+
 	private $class;
 	private $definition;
 	private $instances = 1;
@@ -44,7 +47,7 @@ class Builder
 		$entity = new $this->class;
 
 		foreach ($attributes as $attribute => $value) {
-			if (strpos($attribute, '@') === 0) {
+			if (strpos($attribute, self::IDENTIFIER_METHOD) === 0) {
 				$this->handleMethodCall($entity, $attribute, $value);
 			} else {
 				$entity->$attribute = $value;
@@ -60,14 +63,15 @@ class Builder
 
 	private function handleMethodCall($entity, $attribute, $value)
 	{
+		$multipleCallSymbol = self::IDENTIFIER_METHOD_CALL_MULTIPLE;
 		$method = substr($attribute, 1);
-		if (substr($method, -1) !== '*') {
+		if (substr($method, -1) !== $multipleCallSymbol) {
 			$this->applyMethodCall($entity, $method, $value);
 			return;
 		}
 
 		if (!is_array($value)) {
-			throw new FabricaException('* method suffix can only be used for array values');
+			throw new FabricaException("$multipleCallSymbol method suffix can only be used for array values");
 		}
 
 		$method = substr($method, 0, -1);
