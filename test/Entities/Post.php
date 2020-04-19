@@ -22,14 +22,4 @@ class Post
 
 	/** @Column */
 	public $body;
-
-	public function getUser(): User
-	{
-		return $this->user;
-	}
-
-	public function setUser(User $user)
-	{
-		$this->user = $user;
-	}
 }

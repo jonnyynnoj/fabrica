@@ -72,7 +72,7 @@ class DoctrineStoreTest extends TestCase
 			return [
 				'title' => 'My first post',
 				'body' => 'Something revolutionary',
-				'@setUser' => $fabrica->create(User::class)
+				'user' => $fabrica->create(User::class)
 			];
 		});
 
@@ -85,8 +85,8 @@ class DoctrineStoreTest extends TestCase
 		self::assertInstanceOf(Post::class, $post);
 		self::assertEquals('My first post', $post->title);
 
-		self::assertInstanceOf(User::class, $post->getUser());
-		self::assertEquals('Test', $post->getUser()->getFirstName());
-		self::assertEquals('User', $post->getUser()->getLastName());
+		self::assertInstanceOf(User::class, $post->user);
+		self::assertEquals('Test', $post->user->getFirstName());
+		self::assertEquals('User', $post->user->getLastName());
 	}
 }
