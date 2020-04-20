@@ -71,19 +71,21 @@ class Builder
 		$attributes = array_merge(($this->definition)(), $overrides);
 		$this->entityPopulator->populate($entity, $attributes);
 
-		foreach ($this->onCreated as $onCreated) {
-			$onCreated($entity);
-		}
-
+		$this->fireHandlers($this->onCreated, $entity);
 		unset(self::$createdStack[$this->class]);
 
 		if (empty(self::$createdStack)) {
-			foreach ($this->onComplete as $onComplete) {
-				$onComplete(self::$created);
-			}
+			$this->fireHandlers($this->onComplete, self::$created);
 			self::$created = [];
 		}
 
 		return $entity;
+	}
+
+	private function fireHandlers(array $handlers, $value)
+	{
+		foreach ($handlers as $handler) {
+			$handler($value);
+		}
 	}
 }
