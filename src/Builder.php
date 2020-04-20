@@ -4,20 +4,23 @@ namespace Fabrica;
 
 class Builder
 {
-	private $class;
-	private $definition;
 	private $entityPopulator;
 
+	private $class;
+	private $definition;
 	private $instances = 1;
-	private $onCreated = [];
 
-	private static $createdCache = [];
+	private $onCreated = [];
+	private $onComplete = [];
+
+	private static $created = [];
+	private static $createdStack = [];
 
 	public function __construct(string $class, callable $definition)
 	{
+		$this->entityPopulator = new EntityPopulator();
 		$this->class = $class;
 		$this->definition = $definition;
-		$this->entityPopulator = new EntityPopulator();
 	}
 
 	public function instances(int $instances)
@@ -32,6 +35,12 @@ class Builder
 		return $this;
 	}
 
+	public function onComplete(callable $onComplete)
+	{
+		$this->onComplete[] = $onComplete;
+		return $this;
+	}
+
 	public function create(array $overrides = [])
 	{
 		try {
@@ -43,28 +52,38 @@ class Builder
 				return $this->createEntity($overrides);
 			}, range(1, $this->instances));
 		} catch (\Throwable $throwable) {
-			self::$createdCache = [];
+			self::$created = [];
+			self::$createdStack = [];
 			throw $throwable;
 		}
 	}
 
 	private function createEntity(array $overrides)
 	{
-		if (isset(self::$createdCache[$this->class])) {
-			return self::$createdCache[$this->class];
+		if (isset(self::$createdStack[$this->class])) {
+			return self::$createdStack[$this->class];
 		}
 
 		$entity = new $this->class;
-		self::$createdCache[$this->class] = $entity;
+		self::$created[] = $entity;
+		self::$createdStack[$this->class] = $entity;
 
 		$attributes = array_merge(($this->definition)(), $overrides);
 		$this->entityPopulator->populate($entity, $attributes);
 
-		foreach ($this->onCreated as $callback) {
-			$callback($entity);
+		foreach ($this->onCreated as $onCreated) {
+			$onCreated($entity);
 		}
 
-		unset(self::$createdCache[$this->class]);
+		unset(self::$createdStack[$this->class]);
+
+		if (empty(self::$createdStack)) {
+			foreach ($this->onComplete as $onComplete) {
+				$onComplete(self::$created);
+			}
+			self::$created = [];
+		}
+
 		return $entity;
 	}
 }

@@ -15,7 +15,7 @@ class Post
 	 */
 	public $id;
 
-	/** @ManyToOne(targetEntity="Fabrica\Test\Entities\User", inversedBy="posts") */
+	/** @ManyToOne(targetEntity="Fabrica\Test\Entities\User", inversedBy="posts", cascade={"persist", "remove"}) */
 	public $user;
 
 	/** @Column */

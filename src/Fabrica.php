@@ -35,9 +35,11 @@ class Fabrica
 
 		return (new Builder($class, $this->defined[$class]))
 			->instances($instances)
-			->onCreated(function ($entity) {
+			->onComplete(function ($entities) {
 				if ($this->store) {
-					$this->store->save($entity);
+					foreach ($entities as $entity) {
+						$this->store->save($entity);
+					}
 				}
 			});
 	}

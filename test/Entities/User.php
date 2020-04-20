@@ -26,7 +26,7 @@ class User
 	/** @Column */
 	public $age;
 
-	/** @OneToMany(targetEntity="Fabrica\Test\Entities\Post", mappedBy="user") */
+	/** @OneToMany(targetEntity="Fabrica\Test\Entities\Post", mappedBy="user", cascade={"persist", "remove"}) */
 	public $posts;
 
 	public function __construct()

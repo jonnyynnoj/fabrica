@@ -61,14 +61,6 @@ class DoctrineStoreTest extends TestCase
 			return ['user' => $this->fabrica->create(User::class)];
 		});
 
-		$this->fabrica->define(Post::class, function () {
-			return [
-				'title' => 'My first post',
-				'body' => 'Something revolutionary',
-				'user' => $this->fabrica->create(User::class)
-			];
-		});
-
 		$this->fabrica->create(Post::class);
 
 		$this->entityManager->clear();
@@ -105,7 +97,9 @@ class DoctrineStoreTest extends TestCase
 	/** @test */
 	public function it_can_create_multiple_relations()
 	{
-		$this->definePost();
+		$this->definePost(function () {
+			return ['user' => $this->fabrica->create(User::class)];
+		});
 
 		$this->defineUser(function () {
 			return ['@addPost*' => $this->fabrica->of(Post::class, 3)->create()];
@@ -115,9 +109,10 @@ class DoctrineStoreTest extends TestCase
 
 		$this->entityManager->clear();
 		$repository = $this->entityManager->getRepository(User::class);
-		$user = $repository->findOneBy([]);
+		$users = $repository->findAll();
 
-		self::assertCount(3, $user->posts);
-		self::assertContainsOnlyInstancesOf(Post::class, $user->posts);
+		self::assertCount(1, $users);
+		self::assertCount(3, $users[0]->posts);
+		self::assertContainsOnlyInstancesOf(Post::class, $users[0]->posts);
 	}
 }
