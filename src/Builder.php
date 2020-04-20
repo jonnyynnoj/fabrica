@@ -9,6 +9,7 @@ class Builder
 	private $class;
 	private $definition;
 	private $instances = 1;
+	private $defineArguments = [];
 
 	private $onCreated = [];
 	private $onComplete = [];
@@ -26,6 +27,12 @@ class Builder
 	public function instances(int $instances)
 	{
 		$this->instances = $instances;
+		return $this;
+	}
+
+	public function defineArguments(array $defineArguments)
+	{
+		$this->defineArguments = $defineArguments;
 		return $this;
 	}
 
@@ -68,8 +75,8 @@ class Builder
 		self::$created[] = $entity;
 		self::$createdStack[$this->class] = $entity;
 
-		$attributes = array_merge(($this->definition)(), $overrides);
-		$this->entityPopulator->populate($entity, $attributes);
+		$attributes = ($this->definition)(...$this->defineArguments);
+		$this->entityPopulator->populate($entity, array_merge($attributes, $overrides));
 
 		$this->fireHandlers($this->onCreated, $entity);
 		unset(self::$createdStack[$this->class]);

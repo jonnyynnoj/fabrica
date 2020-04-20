@@ -150,4 +150,17 @@ class FabricaTest extends TestCase
 		self::assertInstanceOf(Post::class, $user->posts[0]);
 		self::assertSame($user, $user->posts[0]->user);
 	}
+
+	/** @test */
+	public function it_can_set_callback_arguments()
+	{
+		Fabrica::addDefineArgument('an argument');
+
+		Fabrica::define(User::class, function ($arg) {
+			self::assertEquals('an argument', $arg);
+			return [];
+		});
+
+		Fabrica::create(User::class);
+	}
 }

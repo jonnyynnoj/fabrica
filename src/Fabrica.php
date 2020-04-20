@@ -15,6 +15,8 @@ class Fabrica
 	/** @var callable[] */
 	private static $defined = [];
 
+	private static $defineArguments = [];
+
 	public static function init(StoreInterface $store = null)
 	{
 		self::$store = $store;
@@ -39,6 +41,7 @@ class Fabrica
 
 		return (new Builder($class, self::$defined[$class]))
 			->instances($instances)
+			->defineArguments(self::$defineArguments)
 			->onComplete(function ($entities) {
 				if (self::$store) {
 					foreach ($entities as $entity) {
@@ -60,5 +63,10 @@ class Fabrica
 				require $file->getPathname();
 			}
 		}
+	}
+
+	public static function addDefineArgument($argument)
+	{
+		self::$defineArguments[] = $argument;
 	}
 }
