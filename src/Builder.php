@@ -24,19 +24,19 @@ class Builder
 		$this->definition = $definition;
 	}
 
-	public function instances(int $instances)
+	public function instances(int $instances): self
 	{
 		$this->instances = $instances;
 		return $this;
 	}
 
-	public function defineArguments(array $defineArguments)
+	public function defineArguments(array $defineArguments): self
 	{
 		$this->defineArguments = $defineArguments;
 		return $this;
 	}
 
-	public function onCreated(callable $onCreated)
+	public function onCreated(callable $onCreated): self
 	{
 		$this->onCreated[] = $onCreated;
 		return $this;
