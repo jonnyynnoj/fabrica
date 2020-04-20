@@ -13,7 +13,7 @@ class FabricaTest extends TestCase
 
 	protected function setUp()
 	{
-		$this->fabrica = new Fabrica();
+		Fabrica::init();
 	}
 
 	/** @test */
@@ -21,7 +21,7 @@ class FabricaTest extends TestCase
 	{
 		$this->defineUser();
 
-		$user = $this->fabrica->create(User::class);
+		$user = Fabrica::create(User::class);
 
 		self::assertEquals('Test', $user->firstName);
 		self::assertEquals('User', $user->lastName);
@@ -30,14 +30,14 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_define_and_create_a_factory_using_methods()
 	{
-		$this->fabrica->define(User::class, function () {
+		Fabrica::define(User::class, function () {
 			return [
 				'@setFirstName' => 'Test',
 				'@setLastName' => 'User',
 			];
 		});
 
-		$user = $this->fabrica->create(User::class);
+		$user = Fabrica::create(User::class);
 
 		self::assertEquals('Test', $user->getFirstName());
 		self::assertEquals('User', $user->getLastName());
@@ -50,13 +50,13 @@ class FabricaTest extends TestCase
 	 */
 	public function it_handles_trying_to_create_undefined_entity()
 	{
-		(new Fabrica())->create(User::class);
+		Fabrica::create(User::class);
 	}
 
 	/** @test */
 	public function it_can_override_definition_when_creating()
 	{
-		$this->fabrica->define(User::class, function () {
+		Fabrica::define(User::class, function () {
 			return [
 				'firstName' => 'Test',
 				'@setLastName' => 'User',
@@ -64,7 +64,7 @@ class FabricaTest extends TestCase
 			];
 		});
 
-		$user = $this->fabrica->create(User::class, [
+		$user = Fabrica::create(User::class, [
 			'@setFirstName' => 'Another',
 			'lastName' => 'Person',
 		]);
@@ -79,7 +79,7 @@ class FabricaTest extends TestCase
 	{
 		$this->defineUser();
 
-		$users = $this->fabrica->of(User::class, 2)->create();
+		$users = Fabrica::of(User::class, 2)->create();
 
 		self::assertCount(2, $users);
 		self::assertContainsOnlyInstancesOf(User::class, $users);
@@ -95,16 +95,16 @@ class FabricaTest extends TestCase
 	public function it_can_call_setter_for_each_element_of_array()
 	{
 		$this->definePost();
-		$this->fabrica->define(User::class, function () {
+		Fabrica::define(User::class, function () {
 			return [
 				'firstName' => 'Test',
 				'@setLastName' => 'User',
 				'age' => 47,
-				'@addPost*' => $this->fabrica->of(Post::class, 3)->create()
+				'@addPost*' => Fabrica::of(Post::class, 3)->create()
 			];
 		});
 
-		$user = $this->fabrica->create(User::class);
+		$user = Fabrica::create(User::class);
 
 		self::assertCount(3, $user->posts);
 		self::assertContainsOnlyInstancesOf(Post::class, $user->posts);
@@ -122,29 +122,29 @@ class FabricaTest extends TestCase
 	 */
 	public function it_throws_exception_if_method_invalid()
 	{
-		$this->fabrica->define(User::class, function () {
+		Fabrica::define(User::class, function () {
 			return ['@invalidMethod' => 'Test'];
 		});
 
-		$this->fabrica->create(User::class);
+		Fabrica::create(User::class);
 	}
 
 	/** @test */
 	public function it_can_handle_cyclical_references()
 	{
-		$this->fabrica->define(User::class, function () {
+		Fabrica::define(User::class, function () {
 			return [
-				'@addPost' => $this->fabrica->create(Post::class)
+				'@addPost' => Fabrica::create(Post::class)
 			];
 		});
 
-		$this->fabrica->define(Post::class, function () {
+		Fabrica::define(Post::class, function () {
 			return [
-				'user' => $this->fabrica->create(User::class)
+				'user' => Fabrica::create(User::class)
 			];
 		});
 
-		$user = $this->fabrica->create(User::class);
+		$user = Fabrica::create(User::class);
 
 		self::assertCount(1, $user->posts);
 		self::assertInstanceOf(Post::class, $user->posts[0]);

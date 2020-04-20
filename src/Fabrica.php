@@ -10,47 +10,46 @@ use RegexIterator;
 class Fabrica
 {
 	/** @var StoreInterface|null */
-	private $store;
+	private static $store;
 
 	/** @var callable[] */
-	private $defined = [];
+	private static $defined = [];
 
-	public function __construct(StoreInterface $store = null)
+	public static function init(StoreInterface $store = null)
 	{
-		$this->store = $store;
+		self::$store = $store;
+		self::$defined = [];
 	}
 
-	public function define(string $class, callable $definition)
+	public static function define(string $class, callable $definition)
 	{
-		$this->defined[$class] = $definition;
+		self::$defined[$class] = $definition;
 	}
 
-	public function create(string $class, array $overrides = [])
+	public static function create(string $class, array $overrides = [])
 	{
-		return $this->of($class)->create($overrides);
+		return self::of($class)->create($overrides);
 	}
 
-	public function of($class, int $instances = 1): Builder
+	public static function of($class, int $instances = 1): Builder
 	{
-		if (!isset($this->defined[$class])) {
+		if (!isset(self::$defined[$class])) {
 			throw new FabricaException("No definition found for $class");
 		}
 
-		return (new Builder($class, $this->defined[$class]))
+		return (new Builder($class, self::$defined[$class]))
 			->instances($instances)
 			->onComplete(function ($entities) {
-				if ($this->store) {
+				if (self::$store) {
 					foreach ($entities as $entity) {
-						$this->store->save($entity);
+						self::$store->save($entity);
 					}
 				}
 			});
 	}
 
-	public function loadFactories(array $paths)
+	public static function loadFactories(array $paths)
 	{
-		$fabrica = $this;
-
 		foreach ($paths as $path) {
 			$directory = new RecursiveDirectoryIterator($path);
 			$iterator = new RecursiveIteratorIterator($directory);

@@ -34,7 +34,7 @@ class DoctrineStoreTest extends TestCase
 		$schemaTool->createSchema($metaData);
 
 		$doctrineStore = new DoctrineStore($this->entityManager);
-		$this->fabrica = new Fabrica($doctrineStore);
+		Fabrica::init($doctrineStore);
 	}
 
 	/** @test */
@@ -42,7 +42,7 @@ class DoctrineStoreTest extends TestCase
 	{
 		$this->defineUser();
 
-		$this->fabrica->create(User::class);
+		Fabrica::create(User::class);
 
 		$this->entityManager->clear();
 		$repository = $this->entityManager->getRepository(User::class);
@@ -58,10 +58,10 @@ class DoctrineStoreTest extends TestCase
 	{
 		$this->defineUser();
 		$this->definePost(function () {
-			return ['user' => $this->fabrica->create(User::class)];
+			return ['user' => Fabrica::create(User::class)];
 		});
 
-		$this->fabrica->create(Post::class);
+		Fabrica::create(Post::class);
 
 		$this->entityManager->clear();
 		$repository = $this->entityManager->getRepository(Post::class);
@@ -80,10 +80,10 @@ class DoctrineStoreTest extends TestCase
 	{
 		$this->definePost();
 		$this->defineUser(function () {
-			return ['@addPost' => $this->fabrica->create(Post::class)];
+			return ['@addPost' => Fabrica::create(Post::class)];
 		});
 
-		$this->fabrica->create(User::class);
+		Fabrica::create(User::class);
 
 		$this->entityManager->clear();
 		$repository = $this->entityManager->getRepository(User::class);
@@ -98,14 +98,14 @@ class DoctrineStoreTest extends TestCase
 	public function it_can_create_multiple_relations()
 	{
 		$this->definePost(function () {
-			return ['user' => $this->fabrica->create(User::class)];
+			return ['user' => Fabrica::create(User::class)];
 		});
 
 		$this->defineUser(function () {
-			return ['@addPost*' => $this->fabrica->of(Post::class, 3)->create()];
+			return ['@addPost*' => Fabrica::of(Post::class, 3)->create()];
 		});
 
-		$this->fabrica->create(User::class);
+		Fabrica::create(User::class);
 
 		$this->entityManager->clear();
 		$repository = $this->entityManager->getRepository(User::class);

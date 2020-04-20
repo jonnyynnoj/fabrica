@@ -13,7 +13,7 @@ trait TestEntities
 
 	private function defineUser(callable $definition = null)
 	{
-		$this->fabrica->define(User::class, function () use ($definition) {
+		Fabrica::define(User::class, function () use ($definition) {
 			return array_merge([
 				'firstName' => 'Test',
 				'lastName' => 'User',
@@ -24,7 +24,7 @@ trait TestEntities
 
 	private function definePost(callable $definition = null)
 	{
-		$this->fabrica->define(Post::class, function () use ($definition) {
+		Fabrica::define(Post::class, function () use ($definition) {
 			return array_merge([
 				'title' => 'My first post',
 				'body' => 'Something revolutionary',
