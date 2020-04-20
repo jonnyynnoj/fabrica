@@ -11,6 +11,7 @@ class Builder
 	private $definition;
 	private $instances = 1;
 	private $onCreated = [];
+	static private $createdCache = [];
 
 	public function __construct(string $class, callable $definition)
 	{
@@ -32,20 +33,38 @@ class Builder
 
 	public function create(array $overrides = [])
 	{
-		if ($this->instances === 1) {
-			return $this->createEntity($overrides);
-		}
+		try {
+			if ($this->instances === 1) {
+				return $this->createEntity($overrides);
+			}
 
-		return array_map(function () use ($overrides) {
-			return $this->createEntity($overrides);
-		}, range(1, $this->instances));
+			return array_map(function () use ($overrides) {
+				return $this->createEntity($overrides);
+			}, range(1, $this->instances));
+		} catch (FabricaException $exception) {
+			self::$createdCache = [];
+			throw $exception;
+		}
 	}
 
 	private function createEntity(array $overrides)
 	{
-		$attributes = array_merge(($this->definition)(), $overrides);
-		$entity = new $this->class;
+		if (isset(self::$createdCache[$this->class])) {
+			return self::$createdCache[$this->class];
+		}
 
+		$entity = new $this->class;
+		self::$createdCache[$this->class] = $entity;
+
+		$attributes = array_merge(($this->definition)(), $overrides);
+		$this->populate($entity, $attributes);
+
+		unset(self::$createdCache[$this->class]);
+		return $entity;
+	}
+
+	private function populate($entity, array $attributes)
+	{
 		foreach ($attributes as $attribute => $value) {
 			if (strpos($attribute, self::IDENTIFIER_METHOD) === 0) {
 				$this->handleMethodCall($entity, $attribute, $value);
@@ -57,8 +76,6 @@ class Builder
 		foreach ($this->onCreated as $callback) {
 			$callback($entity);
 		}
-
-		return $entity;
 	}
 
 	private function handleMethodCall($entity, $attribute, $value)

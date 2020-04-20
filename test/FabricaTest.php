@@ -128,4 +128,26 @@ class FabricaTest extends TestCase
 
 		$this->fabrica->create(User::class);
 	}
+
+	/** @test */
+	public function it_can_handle_cyclical_references()
+	{
+		$this->fabrica->define(User::class, function () {
+			return [
+				'@addPost' => $this->fabrica->create(Post::class)
+			];
+		});
+
+		$this->fabrica->define(Post::class, function () {
+			return [
+				'user' => $this->fabrica->create(User::class)
+			];
+		});
+
+		$user = $this->fabrica->create(User::class);
+
+		self::assertCount(1, $user->posts);
+		self::assertInstanceOf(Post::class, $user->posts[0]);
+		self::assertSame($user, $user->posts[0]->user);
+	}
 }
