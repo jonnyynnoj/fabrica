@@ -3,6 +3,9 @@
 namespace Fabrica;
 
 use Fabrica\Store\StoreInterface;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
 
 class Fabrica
 {
@@ -42,5 +45,21 @@ class Fabrica
 					}
 				}
 			});
+	}
+
+	public function loadFactories(array $paths)
+	{
+		$fabrica = $this;
+
+		foreach ($paths as $path) {
+			$directory = new RecursiveDirectoryIterator($path);
+			$iterator = new RecursiveIteratorIterator($directory);
+			$files = new RegexIterator($iterator, '/^.+\.php$/i');
+
+			/** @var \SplFileInfo $file */
+			foreach ($files as $file) {
+				require $file->getPathname();
+			}
+		}
 	}
 }
