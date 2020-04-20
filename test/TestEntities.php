@@ -11,24 +11,24 @@ trait TestEntities
 	/** @var Fabrica */
 	private $fabrica;
 
-	private function defineUser(array $data = [])
+	private function defineUser(callable $definition = null)
 	{
-		$this->fabrica->define(User::class, function () use ($data) {
+		$this->fabrica->define(User::class, function () use ($definition) {
 			return array_merge([
 				'firstName' => 'Test',
 				'lastName' => 'User',
 				'age' => 36,
-			], $data);
+			], $definition ? $definition() : []);
 		});
 	}
 
-	private function definePost(array $data = [])
+	private function definePost(callable $definition = null)
 	{
-		$this->fabrica->define(Post::class, function () use ($data) {
+		$this->fabrica->define(Post::class, function () use ($definition) {
 			return array_merge([
 				'title' => 'My first post',
 				'body' => 'Something revolutionary',
-			], $data);
+			], $definition ? $definition() : []);
 		});
 	}
 }

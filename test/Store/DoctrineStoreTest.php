@@ -57,6 +57,9 @@ class DoctrineStoreTest extends TestCase
 	public function it_can_create_many_to_one_relation()
 	{
 		$this->defineUser();
+		$this->definePost(function () {
+			return ['user' => $this->fabrica->create(User::class)];
+		});
 
 		$this->fabrica->define(Post::class, function () {
 			return [
@@ -84,7 +87,9 @@ class DoctrineStoreTest extends TestCase
 	public function it_can_create_one_to_many_relation()
 	{
 		$this->definePost();
-		$this->defineUser(['@addPost' => $this->fabrica->create(Post::class)]);
+		$this->defineUser(function () {
+			return ['@addPost' => $this->fabrica->create(Post::class)];
+		});
 
 		$this->fabrica->create(User::class);
 
@@ -101,9 +106,10 @@ class DoctrineStoreTest extends TestCase
 	public function it_can_create_multiple_relations()
 	{
 		$this->definePost();
-		$this->defineUser([
-			'@addPost*' => $this->fabrica->of(Post::class, 3)->create()
-		]);
+
+		$this->defineUser(function () {
+			return ['@addPost*' => $this->fabrica->of(Post::class, 3)->create()];
+		});
 
 		$this->fabrica->create(User::class);
 
