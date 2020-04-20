@@ -23,6 +23,9 @@
 		"doctrine/orm": "^2.5",
 		"phpunit/phpunit": "^7.5"
 	},
+	"suggest": {
+		"fzaninotto/faker": "Use faker to auto-generate fake entity data"
+	},
 	"autoload": {
 		"psr-4": {
 			"Fabrica\\": "src/"
