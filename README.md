@@ -125,9 +125,11 @@ Will create a `User` with 3 `Comments`
 Fabrica ships with a Doctrine implementation that will automatically persist your entities on creation.
 
 ```php
-$store = new \Fabrica\Store\DoctrineStore($this->entityManager);
+$store = new \Fabrica\Store\DoctrineStore($entityManager);
 Fabrica::init($store);
 ```
+
+You can see an example of configuring against an in-memory sqlite database in the [test directory](test/Store/DoctrineStoreTest.php).
 
 ### Faker Integration
 
