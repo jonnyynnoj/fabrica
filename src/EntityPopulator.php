@@ -6,18 +6,11 @@ class EntityPopulator
 {
 	const IDENTIFIER_METHOD = '@';
 	const IDENTIFIER_METHOD_CALL_MULTIPLE = '*';
-	const IDENTIFIER_NESTED_PROPERTY = '.';
 
 	public function populate($entity, array $attributes)
 	{
-		foreach ($attributes as $attribute => $value) {
-			if (strpos($attribute, self::IDENTIFIER_NESTED_PROPERTY) !== false) {
-				$this->handleNestedProperty($entity, $attribute, $value);
-			} elseif ($this->isMethodCall($attribute)) {
-				$this->handleMethodCall($entity, $attribute, $value);
-			} else {
-				$entity->$attribute = $value;
-			}
+		foreach ($attributes as $path => $value) {
+			$this->handlePath($entity, $path, $value);
 		}
 	}
 
@@ -52,10 +45,11 @@ class EntityPopulator
 		return $entity->$method($value);
 	}
 
-	private function handleNestedProperty($entity, string $attribute, $value)
+	private function handlePath($entity, string $path, $value)
 	{
-		$segments = explode('.', $attribute);
-		$last = array_pop($segments);
+		$segments = explode('.', $path);
+		$lastSegment = array_pop($segments);
+
 		foreach ($segments as $i => $segment) {
 			if ($this->isMethodCall($segment)) {
 				$entity = $this->applyMethodCall($entity, $segment);
@@ -72,9 +66,9 @@ class EntityPopulator
 
 			if (is_array($property) || $property instanceof \Traversable) {
 				foreach ($property as $item) {
-					$remainingSegments = array_slice($segments, $i + 1);
-					$path = $remainingSegments ? implode(self::IDENTIFIER_NESTED_PROPERTY, $remainingSegments) . ".$last" : $last;
-					$this->handleNestedProperty($item, $path, $value);
+					$nextSegments = array_slice($segments, $i + 1);
+					$nextPath = $nextSegments ? implode('.', $nextSegments) . ".$lastSegment" : $lastSegment;
+					$this->handlePath($item, $nextPath, $value);
 				}
 				return;
 			}
@@ -86,7 +80,11 @@ class EntityPopulator
 			$entity = $property;
 		}
 
-		$this->populate($entity, [$last => $value]);
+		if ($this->isMethodCall($lastSegment)) {
+			$this->handleMethodCall($entity, $lastSegment, $value);
+		} else {
+			$entity->$lastSegment = $value;
+		}
 	}
 
 	private function isMethodCall($attribute): bool
