@@ -15,6 +15,9 @@ class Account
 	 */
 	public $id;
 
+	/** @OneToOne(targetEntity="Fabrica\Test\Entities\User", cascade={"persist"}) */
+	public $user;
+
 	/** @OneToOne(targetEntity="Fabrica\Test\Entities\Address", cascade={"persist"}) */
 	public $address;
 

@@ -57,23 +57,33 @@ class EntityPopulator
 		$segments = explode('.', $attribute);
 		$last = array_pop($segments);
 		foreach ($segments as $i => $segment) {
-			$class = get_class($entity);
-
-			if (property_exists($entity, $segment)) {
-				if (!is_object($entity->$segment)) {
-					throw new FabricaException("Nested property $segment on $class is not an object");
-				}
-
-				$entity = $entity->$segment;
-				continue;
-			}
-
 			if ($this->isMethodCall($segment)) {
 				$entity = $this->applyMethodCall($entity, $segment);
 				continue;
 			}
 
-			throw new FabricaException("Nested property $segment does not exist on $class");
+			$class = get_class($entity);
+
+			if (!property_exists($entity, $segment)) {
+				throw new FabricaException("Nested property $segment does not exist on $class");
+			}
+
+			$property = $entity->$segment;
+
+			if (is_array($property) || $property instanceof \Traversable) {
+				foreach ($property as $item) {
+					$remainingSegments = array_slice($segments, $i + 1);
+					$path = $remainingSegments ? implode(self::IDENTIFIER_NESTED_PROPERTY, $remainingSegments) . ".$last" : $last;
+					$this->handleNestedProperty($item, $path, $value);
+				}
+				return;
+			}
+
+			if (!is_object($property)) {
+				throw new FabricaException("Nested property $segment on $class is not an object");
+			}
+
+			$entity = $property;
 		}
 
 		$this->populate($entity, [$last => $value]);

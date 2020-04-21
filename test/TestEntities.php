@@ -23,6 +23,7 @@ trait TestEntities
 
 		Fabrica::define(Account::class, function () {
 			return [
+				'user' => Fabrica::create(User::class),
 				'address' => Fabrica::create(Address::class)
 			];
 		});

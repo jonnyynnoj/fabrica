@@ -5,6 +5,7 @@ namespace Fabrica\Test;
 use Fabrica\Fabrica;
 use Fabrica\Test\Entities\Account;
 use Fabrica\Test\Entities\Address;
+use Fabrica\Test\Entities\Post;
 use Fabrica\Test\Entities\User;
 use PHPUnit\Framework\TestCase;
 
@@ -26,6 +27,26 @@ class NestedPropertiesTest extends TestCase
 		self::assertEquals('Random', $user->firstName);
 		self::assertEquals('A different street', $user->account->address->street);
 		self::assertEquals('London', $user->account->address->city);
+	}
+
+	/** @test */
+	public function it_can_set_property_for_each_element_of_array()
+	{
+		$this->defineUser(function () {
+			return [
+				'@addPost*' => Fabrica::of(Post::class, 3)->create()
+			];
+		});
+
+		$this->definePost();
+
+		$account = Fabrica::create(Account::class, [
+			'user.posts.title' => 'A different title'
+		]);
+
+		self::assertEquals('A different title', $account->user->posts[0]->title);
+		self::assertEquals('A different title', $account->user->posts[1]->title);
+		self::assertEquals('A different title', $account->user->posts[2]->title);
 	}
 
 	/**
