@@ -69,9 +69,9 @@ class FabricaTest extends TestCase
 			'lastName' => 'Person',
 		]);
 
-		self::assertEquals($user->firstName, 'Another');
-		self::assertEquals($user->lastName, 'Person');
-		self::assertSame($user->age, 47);
+		self::assertEquals('Another', $user->firstName);
+		self::assertEquals('Person', $user->lastName);
+		self::assertSame(47, $user->age);
 	}
 
 	/** @test */
