@@ -60,6 +60,33 @@ Given that a value is an array, you can indicate that you wish the method to be 
 '@addPermission*' => ['USER', 'ADMIN'],
 ```
 
+### Overrides
+
+You can override any default values when creating your entity:
+
+```php
+/// UserFactory.php
+Fabrica::define(User::class, function () {
+    return [
+        'username' => 'user123',
+        'firstName' => 'Test',
+        'lastName' => 'User',
+        '@setAge' => 47,
+    ];
+});
+
+/// UserTest.php
+$user = Fabrica::create(User::class, [
+    'firstName' => 'Another',
+    '@setAge' => 24,
+]);
+
+self::assertEquals('user1223', $user->username);
+self::assertEquals('Another', $user->firstName);
+self::assertEquals('User', $user->lastName);
+self::assertEquals(24, $user->getAge());
+```
+
 ### Create Multiple
 
 You can create multiple entities like so:
