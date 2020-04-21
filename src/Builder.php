@@ -76,15 +76,17 @@ class Builder
 		self::$createdStack[$this->class] = $entity;
 
 		$attributes = ($this->definition)(...$this->defineArguments);
-		$this->entityPopulator->populate($entity, array_merge($attributes, $overrides));
+		$this->entityPopulator->populate($entity, array_merge($attributes));
 
-		$this->fireHandlers($this->onCreated, $entity);
 		unset(self::$createdStack[$this->class]);
 
 		if (empty(self::$createdStack)) {
+			$this->entityPopulator->populate($entity, $overrides);
 			$this->fireHandlers($this->onComplete, self::$created);
 			self::$created = [];
 		}
+
+		$this->fireHandlers($this->onCreated, $entity);
 
 		return $entity;
 	}

@@ -6,11 +6,14 @@ class EntityPopulator
 {
 	const IDENTIFIER_METHOD = '@';
 	const IDENTIFIER_METHOD_CALL_MULTIPLE = '*';
+	const IDENTIFIER_NESTED_PROPERTY = '.';
 
 	public function populate($entity, array $attributes)
 	{
 		foreach ($attributes as $attribute => $value) {
-			if (strpos($attribute, self::IDENTIFIER_METHOD) === 0) {
+			if (strpos($attribute, self::IDENTIFIER_NESTED_PROPERTY) !== false) {
+				$this->handleNestedProperty($entity, $attribute, $value);
+			} elseif ($this->isMethodCall($attribute)) {
 				$this->handleMethodCall($entity, $attribute, $value);
 			} else {
 				$entity->$attribute = $value;
@@ -20,9 +23,8 @@ class EntityPopulator
 
 	private function handleMethodCall($entity, $attribute, $value)
 	{
-		$method = substr($attribute, 1);
-		if (substr($method, -1) !==  self::IDENTIFIER_METHOD_CALL_MULTIPLE) {
-			$this->applyMethodCall($entity, $method, $value);
+		if (substr($attribute, -1) !== self::IDENTIFIER_METHOD_CALL_MULTIPLE) {
+			$this->applyMethodCall($entity, $attribute, $value);
 			return;
 		}
 
@@ -32,20 +34,53 @@ class EntityPopulator
 			);
 		}
 
-		$method = substr($method, 0, -1);
+		$method = substr($attribute, 0, -1);
 
 		foreach ($value as $item) {
 			$this->applyMethodCall($entity, $method, $item);
 		}
 	}
 
-	private function applyMethodCall($entity, $method, $value)
+	private function applyMethodCall($entity, $attribute, $value = null)
 	{
+		$method = substr($attribute, 1);
 		if (!is_callable([$entity, $method])) {
 			$class = get_class($entity);
 			throw new FabricaException("Method $method does not exist on $class");
 		}
 
-		$entity->$method($value);
+		return $entity->$method($value);
+	}
+
+	private function handleNestedProperty($entity, string $attribute, $value)
+	{
+		$segments = explode('.', $attribute);
+		$last = array_pop($segments);
+		foreach ($segments as $i => $segment) {
+			$class = get_class($entity);
+
+			if (property_exists($entity, $segment)) {
+				if (!is_object($entity->$segment)) {
+					throw new FabricaException("Nested property $segment on $class is not an object");
+				}
+
+				$entity = $entity->$segment;
+				continue;
+			}
+
+			if ($this->isMethodCall($segment)) {
+				$entity = $this->applyMethodCall($entity, $segment);
+				continue;
+			}
+
+			throw new FabricaException("Nested property $segment does not exist on $class");
+		}
+
+		$this->populate($entity, [$last => $value]);
+	}
+
+	private function isMethodCall($attribute): bool
+	{
+		return strpos($attribute, self::IDENTIFIER_METHOD) === 0;
 	}
 }
