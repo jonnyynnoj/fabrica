@@ -97,12 +97,12 @@ class DoctrineStoreTest extends TestCase
 	/** @test */
 	public function it_can_create_multiple_relations()
 	{
-		$this->definePost(function () {
-			return ['user' => Fabrica::create(User::class)];
-		});
-
 		$this->defineUser(function () {
 			return ['@addPost*' => Fabrica::of(Post::class, 3)->create()];
+		});
+
+		$this->definePost(function () {
+			return ['user' => Fabrica::create(User::class)];
 		});
 
 		Fabrica::create(User::class);
@@ -114,5 +114,9 @@ class DoctrineStoreTest extends TestCase
 		self::assertCount(1, $users);
 		self::assertCount(3, $users[0]->posts);
 		self::assertContainsOnlyInstancesOf(Post::class, $users[0]->posts);
+
+		foreach ($users[0]->posts as $post) {
+			self::assertSame($users[0], $post->user);
+		}
 	}
 }
