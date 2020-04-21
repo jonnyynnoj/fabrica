@@ -58,6 +58,14 @@ class EntityPopulator
 
 			$class = get_class($entity);
 
+			if (preg_match('/(.+)\[(\d+)\]$/', $segment, $matches)) {
+				$property = $entity->{$matches[1]};
+				if (is_array($property) || $property instanceof \Traversable) {
+					$entity = $property[$matches[2]];
+					continue;
+				}
+			}
+
 			if (!property_exists($entity, $segment)) {
 				throw new FabricaException("Nested property $segment does not exist on $class");
 			}

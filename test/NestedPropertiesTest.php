@@ -49,6 +49,34 @@ class NestedPropertiesTest extends TestCase
 		self::assertEquals('A different title', $account->user->posts[2]->title);
 	}
 
+	/** @test */
+	public function it_can_set_property_on_single_element_of_array()
+	{
+		$this->defineUser(function () {
+			return [
+				'@addPost*' => Fabrica::of(Post::class, 3)->create()
+			];
+		});
+
+		$this->definePost();
+
+		$user = Fabrica::create(User::class, [
+			'posts[1].title' => 'Just the 2nd one is different'
+		]);
+
+		self::assertEquals('My first post', $user->posts[0]->title);
+		self::assertEquals('Just the 2nd one is different', $user->posts[1]->title);
+		self::assertEquals('My first post', $user->posts[2]->title);
+
+		$account = Fabrica::create(Account::class, [
+			'user.posts[2].title' => 'The last one is different'
+		]);
+
+		self::assertEquals('My first post', $account->user->posts[0]->title);
+		self::assertEquals('My first post', $account->user->posts[1]->title);
+		self::assertEquals('The last one is different', $account->user->posts[2]->title);
+	}
+
 	/**
 	 * @test
 	 * @expectedException \Fabrica\FabricaException
