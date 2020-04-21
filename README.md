@@ -147,6 +147,42 @@ Fabrica::define(User::class, function () {
 ```
 Will create a `User` with 3 `Comments`
 
+#### Overriding Relation Properties
+
+You can also override properties of nested relations when creating an entity:
+
+```php
+$comment = Fabrica::create(Comment::class, [
+    'author.firstName' => 'John'
+]);
+
+self::assertEquals('user123', $comment->user->username);
+self::assertEquals('John', $comment->user->firstName);
+```
+
+For every entity of a one-to-many relation:
+
+```php
+$user = Fabrica::create(User::class, [
+    'comments.title' => 'Each comment now has this title'
+]);
+
+foreach ($user->comments as $comment) {
+    self::assertEquals('Each comment now has this title', $comment->title);
+}
+```
+
+Or even for just a single entity:
+
+```php
+$user = Fabrica::create(User::class, [
+    'comments[1].title' => 'Only the 2nd comment has this title'
+]);
+
+self::assertEquals('A test comment', $user->comments[0]->title);
+self::assertEquals('Only the 2nd comment has this title', $user->comments[1]->title);
+```
+
 ### Doctrine Integration
 
 Fabrica ships with a Doctrine implementation that will automatically persist your entities on creation.
