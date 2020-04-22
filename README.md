@@ -12,7 +12,7 @@ composer require fabrica/fabrica --dev
 
 ### Setup
 
-First intialise Fabrica somewhere within your test suite. For PHPUnit, this can be done using the `bootstrap` option:
+First initialise Fabrica somewhere within your test suite. For PHPUnit, this can be done using the `bootstrap` option:
 ```php
 Fabrica::init();
 Fabrica::loadFactories([__DIR__ . '/factories']);
