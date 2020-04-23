@@ -5,7 +5,7 @@ Fabrica handles the definition and creation of objects for use in testing.
 ## Installing
 
 ```
-composer require fabrica/fabrica --dev
+composer require noj/fabrica --dev
 ```
 
 ## Usage
