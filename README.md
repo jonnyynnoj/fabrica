@@ -160,19 +160,7 @@ self::assertEquals('user123', $comment->user->username);
 self::assertEquals('John', $comment->user->firstName);
 ```
 
-For every entity of a one-to-many relation:
-
-```php
-$user = Fabrica::create(User::class, [
-    'comments.title' => 'Each comment now has this title'
-]);
-
-foreach ($user->comments as $comment) {
-    self::assertEquals('Each comment now has this title', $comment->title);
-}
-```
-
-Or even for just a single entity:
+For a single entity of a one-to-many relation:
 
 ```php
 $user = Fabrica::create(User::class, [
@@ -181,6 +169,18 @@ $user = Fabrica::create(User::class, [
 
 self::assertEquals('A test comment', $user->comments[0]->title);
 self::assertEquals('Only the 2nd comment has this title', $user->comments[1]->title);
+```
+
+Or even every entity:
+
+```php
+$user = Fabrica::create(User::class, [
+    'comments.*.title' => 'Each comment now has this title'
+]);
+
+foreach ($user->comments as $comment) {
+    self::assertEquals('Each comment now has this title', $comment->title);
+}
 ```
 
 ### Doctrine Integration
