@@ -2,10 +2,10 @@
 
 namespace Noj\Fabrica;
 
+use Noj\Dot\Dot;
+
 class Builder
 {
-	private $entityPopulator;
-
 	private $class;
 	private $definition;
 	private $instances = 1;
@@ -19,7 +19,6 @@ class Builder
 
 	public function __construct(string $class, callable $definition)
 	{
-		$this->entityPopulator = new EntityPopulator();
 		$this->class = $class;
 		$this->definition = $definition;
 	}
@@ -76,12 +75,14 @@ class Builder
 		self::$createdStack[$this->class] = $entity;
 
 		$attributes = ($this->definition)(...$this->defineArguments);
-		$this->entityPopulator->populate($entity, array_merge($attributes));
+
+		$dot = new Dot($entity);
+		$dot->set($attributes);
 
 		unset(self::$createdStack[$this->class]);
 
 		if (empty(self::$createdStack)) {
-			$this->entityPopulator->populate($entity, $overrides);
+			$dot->set($overrides);
 			$this->fireHandlers($this->onComplete, self::$created);
 			self::$created = [];
 		}

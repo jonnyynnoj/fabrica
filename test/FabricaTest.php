@@ -115,18 +115,25 @@ class FabricaTest extends TestCase
 		}
 	}
 
-	/**
-	 * @test
-	 * @expectedException \Noj\Fabrica\FabricaException
-	 * @expectedExceptionMessage Method invalidMethod does not exist on Noj\Fabrica\Test\Entities\User
-	 */
-	public function it_throws_exception_if_method_invalid()
+	/** @test */
+	public function it_can_create_relation()
 	{
+		$this->definePost();
+
 		Fabrica::define(User::class, function () {
-			return ['@invalidMethod' => 'Test'];
+			return [
+				'@addPost' => Fabrica::create(Post::class)
+			];
 		});
 
-		Fabrica::create(User::class);
+		$user = Fabrica::create(User::class, [
+			'posts.0.title' => 'My new post'
+		]);
+
+		self::assertCount(1, $user->posts);
+		self::assertInstanceOf(Post::class, $user->posts[0]);
+		self::assertSame($user, $user->posts[0]->user);
+		self::assertEquals('My new post', $user->posts[0]->title);
 	}
 
 	/** @test */

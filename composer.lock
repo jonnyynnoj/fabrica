@@ -4,8 +4,48 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3677acd958e920c97922733557585335",
-    "packages": [],
+    "content-hash": "d2536dd7b75e07bb31f9edb3ecf69df9",
+    "packages": [
+        {
+            "name": "noj/dot",
+            "version": "0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jonnyynnoj/dot.git",
+                "reference": "2918793fe578654e979d2139e27fe09b9336cdc6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jonnyynnoj/dot/zipball/2918793fe578654e979d2139e27fe09b9336cdc6",
+                "reference": "2918793fe578654e979d2139e27fe09b9336cdc6",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Noj\\Dot\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Taylor",
+                    "email": "jonny.taylor5@gmail.com"
+                }
+            ],
+            "description": "Nested array/object access through dot notation",
+            "time": "2020-04-23T14:45:26+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "doctrine/annotations",
@@ -2665,6 +2705,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "^7.0"
+    },
     "platform-dev": []
 }
