@@ -176,7 +176,7 @@ Or even for just a single entity:
 
 ```php
 $user = Fabrica::create(User::class, [
-    'comments[1].title' => 'Only the 2nd comment has this title'
+    'comments.1.title' => 'Only the 2nd comment has this title'
 ]);
 
 self::assertEquals('A test comment', $user->comments[0]->title);
