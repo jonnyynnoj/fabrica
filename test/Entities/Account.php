@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Test\Entities;
+namespace Noj\Fabrica\Test\Entities;
 
 /**
  * @Entity
@@ -15,10 +15,10 @@ class Account
 	 */
 	public $id;
 
-	/** @OneToOne(targetEntity="Fabrica\Test\Entities\User", cascade={"persist"}) */
+	/** @OneToOne(targetEntity="Noj\Fabrica\Test\Entities\User", cascade={"persist"}) */
 	public $user;
 
-	/** @OneToOne(targetEntity="Fabrica\Test\Entities\Address", cascade={"persist"}) */
+	/** @OneToOne(targetEntity="Noj\Fabrica\Test\Entities\Address", cascade={"persist"}) */
 	public $address;
 
 	public function getAddress(): Address

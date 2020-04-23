@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Test\Entities;
+namespace Noj\Fabrica\Test\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -26,10 +26,10 @@ class User
 	/** @Column */
 	public $age;
 
-	/** @OneToMany(targetEntity="Fabrica\Test\Entities\Post", mappedBy="user", cascade={"persist", "remove"}) */
+	/** @OneToMany(targetEntity="Noj\Fabrica\Test\Entities\Post", mappedBy="user", cascade={"persist", "remove"}) */
 	public $posts;
 
-	/** @OneToOne(targetEntity="Fabrica\Test\Entities\Account", cascade={"persist"}) */
+	/** @OneToOne(targetEntity="Noj\Fabrica\Test\Entities\Account", cascade={"persist"}) */
 	public $account;
 
 	public function __construct()

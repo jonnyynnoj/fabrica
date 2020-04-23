@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Test;
+namespace Noj\Fabrica\Test;
 
-use Fabrica\Fabrica;
-use Fabrica\Test\Entities\Account;
-use Fabrica\Test\Entities\Address;
-use Fabrica\Test\Entities\Post;
-use Fabrica\Test\Entities\User;
+use Noj\Fabrica\Fabrica;
+use Noj\Fabrica\Test\Entities\Account;
+use Noj\Fabrica\Test\Entities\Address;
+use Noj\Fabrica\Test\Entities\Post;
+use Noj\Fabrica\Test\Entities\User;
 use PHPUnit\Framework\TestCase;
 
 class NestedPropertiesTest extends TestCase
@@ -79,7 +79,7 @@ class NestedPropertiesTest extends TestCase
 
 	/**
 	 * @test
-	 * @expectedException \Fabrica\FabricaException
+	 * @expectedException \Noj\Fabrica\FabricaException
 	 * @dataProvider propertyDoesntExistProvider
 	 */
 	public function it_throws_exception_if_nested_property_doesnt_exist($key, $entity)
@@ -95,7 +95,7 @@ class NestedPropertiesTest extends TestCase
 
 	/**
 	 * @test
-	 * @expectedException \Fabrica\FabricaException
+	 * @expectedException \Noj\Fabrica\FabricaException
 	 * @dataProvider methodDoesntExistProvider
 	 */
 	public function it_throws_exception_if_nested_method_doesnt_exist($key, $entity)
@@ -111,8 +111,8 @@ class NestedPropertiesTest extends TestCase
 
 	/**
 	 * @test
-	 * @expectedException \Fabrica\FabricaException
-	 * @expectedExceptionMessage Nested property id on Fabrica\Test\Entities\Account is not an object
+	 * @expectedException \Noj\Fabrica\FabricaException
+	 * @expectedExceptionMessage Nested property id on Noj\Fabrica\Test\Entities\Account is not an object
 	 */
 	public function it_throws_exception_if_nested_property_is_not_an_object()
 	{

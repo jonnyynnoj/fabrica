@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica;
+namespace Noj\Fabrica;
 
 class Builder
 {

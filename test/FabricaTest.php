@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Test;
+namespace Noj\Fabrica\Test;
 
-use Fabrica\Fabrica;
-use Fabrica\Test\Entities\Post;
-use Fabrica\Test\Entities\User;
+use Noj\Fabrica\Fabrica;
+use Noj\Fabrica\Test\Entities\Post;
+use Noj\Fabrica\Test\Entities\User;
 use PHPUnit\Framework\TestCase;
 
 class FabricaTest extends TestCase
@@ -45,8 +45,8 @@ class FabricaTest extends TestCase
 
 	/**
 	 * @test
-	 * @expectedException Fabrica\FabricaException
-	 * @expectedExceptionMessage No definition found for Fabrica\Test\Entities\User
+	 * @expectedException Noj\Fabrica\FabricaException
+	 * @expectedExceptionMessage No definition found for Noj\Fabrica\Test\Entities\User
 	 */
 	public function it_handles_trying_to_create_undefined_entity()
 	{
@@ -117,8 +117,8 @@ class FabricaTest extends TestCase
 
 	/**
 	 * @test
-	 * @expectedException \Fabrica\FabricaException
-	 * @expectedExceptionMessage Method invalidMethod does not exist on Fabrica\Test\Entities\User
+	 * @expectedException \Noj\Fabrica\FabricaException
+	 * @expectedExceptionMessage Method invalidMethod does not exist on Noj\Fabrica\Test\Entities\User
 	 */
 	public function it_throws_exception_if_method_invalid()
 	{

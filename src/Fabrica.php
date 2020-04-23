@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica;
+namespace Noj\Fabrica;
 
-use Fabrica\Store\StoreInterface;
+use Noj\Fabrica\Store\StoreInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;

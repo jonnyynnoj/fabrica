@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Test\Store;
+namespace Noj\Fabrica\Test\Store;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
-use Fabrica\Fabrica;
-use Fabrica\Test\Entities\Post;
-use Fabrica\Test\Entities\User;
-use Fabrica\Store\DoctrineStore;
-use Fabrica\Test\TestEntities;
+use Noj\Fabrica\Fabrica;
+use Noj\Fabrica\Test\Entities\Post;
+use Noj\Fabrica\Test\Entities\User;
+use Noj\Fabrica\Store\DoctrineStore;
+use Noj\Fabrica\Test\TestEntities;
 use PHPUnit\Framework\TestCase;
 
 class DoctrineStoreTest extends TestCase

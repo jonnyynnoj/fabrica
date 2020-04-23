@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Test\Entities;
+namespace Noj\Fabrica\Test\Entities;
 
 /** @Entity */
 class Address

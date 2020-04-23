@@ -1,5 +1,5 @@
 {
-	"name": "fabrica/fabrica",
+	"name": "noj/fabrica",
 	"description": "Library to create entity factories for testing",
 	"type": "library",
 	"keywords": [
@@ -28,12 +28,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Fabrica\\": "src/"
+			"Noj\\Fabrica\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Fabrica\\Test\\": "test/"
+			"Noj\\Fabrica\\Test\\": "test/"
 		}
 	},
 	"config": {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Test\Entities;
+namespace Noj\Fabrica\Test\Entities;
 
 /**
  * @Entity
@@ -15,7 +15,7 @@ class Post
 	 */
 	public $id;
 
-	/** @ManyToOne(targetEntity="Fabrica\Test\Entities\User", inversedBy="posts", cascade={"persist", "remove"}) */
+	/** @ManyToOne(targetEntity="Noj\Fabrica\Test\Entities\User", inversedBy="posts", cascade={"persist", "remove"}) */
 	public $user;
 
 	/** @Column */

@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Test;
+namespace Noj\Fabrica\Test;
 
-use Fabrica\Fabrica;
-use Fabrica\Test\Entities\Account;
-use Fabrica\Test\Entities\Address;
-use Fabrica\Test\Entities\Post;
-use Fabrica\Test\Entities\User;
+use Noj\Fabrica\Fabrica;
+use Noj\Fabrica\Test\Entities\Account;
+use Noj\Fabrica\Test\Entities\Address;
+use Noj\Fabrica\Test\Entities\Post;
+use Noj\Fabrica\Test\Entities\User;
 
 trait TestEntities
 {

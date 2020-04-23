@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Fabrica\Store;
+namespace Noj\Fabrica\Store;
 
 interface StoreInterface
 {
