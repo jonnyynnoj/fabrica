@@ -3,7 +3,6 @@
 namespace Noj\Fabrica\Test;
 
 use Noj\Fabrica\Fabrica;
-use Noj\Fabrica\Test\Entities\Account;
 use Noj\Fabrica\Test\Entities\Address;
 use Noj\Fabrica\Test\Entities\Post;
 use Noj\Fabrica\Test\Entities\User;
@@ -17,15 +16,7 @@ trait TestEntities
 				'firstName' => 'Test',
 				'lastName' => 'User',
 				'age' => 36,
-				'account' => Fabrica::create(Account::class)
 			], $definition ? $definition() : []);
-		});
-
-		Fabrica::define(Account::class, function () {
-			return [
-				'user' => Fabrica::create(User::class),
-				'address' => Fabrica::create(Address::class)
-			];
 		});
 
 		Fabrica::define(Address::class, function () {

@@ -29,9 +29,6 @@ class User
 	/** @OneToMany(targetEntity="Noj\Fabrica\Test\Entities\Post", mappedBy="user", cascade={"persist", "remove"}) */
 	public $posts;
 
-	/** @OneToOne(targetEntity="Noj\Fabrica\Test\Entities\Account", cascade={"persist"}) */
-	public $account;
-
 	public function __construct()
 	{
 		$this->posts = new ArrayCollection();
