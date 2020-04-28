@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2536dd7b75e07bb31f9edb3ecf69df9",
+    "content-hash": "60b750a786e372d8fb18b82757e0ce40",
     "packages": [
         {
             "name": "noj/dot",
-            "version": "0.0.1",
+            "version": "0.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jonnyynnoj/dot.git",
-                "reference": "2918793fe578654e979d2139e27fe09b9336cdc6"
+                "reference": "856f14b280053dcef18d2bd679a629c16a4da7ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jonnyynnoj/dot/zipball/2918793fe578654e979d2139e27fe09b9336cdc6",
-                "reference": "2918793fe578654e979d2139e27fe09b9336cdc6",
+                "url": "https://api.github.com/repos/jonnyynnoj/dot/zipball/856f14b280053dcef18d2bd679a629c16a4da7ca",
+                "reference": "856f14b280053dcef18d2bd679a629c16a4da7ca",
                 "shasum": ""
             },
             "require": {
@@ -30,7 +30,10 @@
             "autoload": {
                 "psr-4": {
                     "Noj\\Dot\\": "src/"
-                }
+                },
+                "files": [
+                    "src/functions.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -43,7 +46,7 @@
                 }
             ],
             "description": "Nested array/object access through dot notation",
-            "time": "2020-04-23T14:45:26+00:00"
+            "time": "2020-04-28T17:32:14+00:00"
         }
     ],
     "packages-dev": [
