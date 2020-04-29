@@ -2,4 +2,4 @@
 
 namespace PHPSTORM_META;
 
-override(\Fabrica\Fabrica::create(0), type(0));
+override(\Noj\Fabrica\Fabrica::create(0), type(0));
