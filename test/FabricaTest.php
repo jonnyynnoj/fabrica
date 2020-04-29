@@ -120,7 +120,9 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_create_relation()
 	{
-		$this->definePost();
+		$this->definePost(function () {
+			return ['user' => Fabrica::create(User::class)];
+		});
 
 		Fabrica::define(User::class, function () {
 			return [

@@ -56,7 +56,6 @@ class User
 
 	public function addPost(Post $post)
 	{
-		$post->user = $this;
 		$this->posts->add($post);
 	}
 }

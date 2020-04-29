@@ -78,7 +78,9 @@ class DoctrineStoreTest extends TestCase
 	/** @test */
 	public function it_can_create_one_to_many_relation()
 	{
-		$this->definePost();
+		$this->definePost(function () {
+			return ['user' => Fabrica::create(User::class)];
+		});
 		$this->defineUser(function () {
 			return ['@addPost' => Fabrica::create(Post::class)];
 		});
