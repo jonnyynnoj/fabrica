@@ -76,10 +76,12 @@ Fabrica::define(User::class, function () {
 });
 
 /// UserTest.php
-$user = Fabrica::create(User::class, [
-    'firstName' => 'Another',
-    '@setAge' => 24,
-]);
+$user = Fabrica::create(User::class, function () {
+    return [
+        'firstName' => 'Another',
+        '@setAge' => 24,
+    ];
+});
 
 self::assertEquals('user1223', $user->username);
 self::assertEquals('Another', $user->firstName);
@@ -152,9 +154,11 @@ Will create a `User` with 3 `Comments`
 You can also override properties of nested relations when creating an entity:
 
 ```php
-$comment = Fabrica::create(Comment::class, [
-    'author.firstName' => 'John'
-]);
+$comment = Fabrica::create(Comment::class, function () {
+    return [
+        'author.firstName' => 'John'
+    ];
+});
 
 self::assertEquals('user123', $comment->user->username);
 self::assertEquals('John', $comment->user->firstName);
@@ -163,9 +167,11 @@ self::assertEquals('John', $comment->user->firstName);
 For a single entity of a one-to-many relation:
 
 ```php
-$user = Fabrica::create(User::class, [
-    'comments.1.title' => 'Only the 2nd comment has this title'
-]);
+$user = Fabrica::create(User::class, function () {
+    return [
+        'comments.1.title' => 'Only the 2nd comment has this title'
+    ];
+});
 
 self::assertEquals('A test comment', $user->comments[0]->title);
 self::assertEquals('Only the 2nd comment has this title', $user->comments[1]->title);
@@ -174,9 +180,11 @@ self::assertEquals('Only the 2nd comment has this title', $user->comments[1]->ti
 Or even every entity:
 
 ```php
-$user = Fabrica::create(User::class, [
-    'comments.*.title' => 'Each comment now has this title'
-]);
+$user = Fabrica::create(User::class, function () {
+    return [
+        'comments.*.title' => 'Each comment now has this title'
+    ];
+});
 
 foreach ($user->comments as $comment) {
     self::assertEquals('Each comment now has this title', $comment->title);
