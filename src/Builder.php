@@ -46,8 +46,7 @@ class Builder
 		$this->onComplete[] = $onComplete;
 		return $this;
 	}
-
-	public function create(array $overrides = [])
+	public function create(callable $overrides = null)
 	{
 		try {
 			if ($this->instances === 1) {
@@ -64,7 +63,7 @@ class Builder
 		}
 	}
 
-	private function createEntity(array $overrides)
+	private function createEntity(callable $overrides = null)
 	{
 		if (isset(self::$createdStack[$this->class])) {
 			return self::$createdStack[$this->class];
@@ -75,14 +74,13 @@ class Builder
 		self::$createdStack[$this->class] = $entity;
 
 		$attributes = ($this->definition)(...$this->defineArguments);
+		$overriddenAttributes = is_callable($overrides) ? $overrides(...$this->defineArguments) : [];
 
-		$dot = new Dot($entity);
-		$dot->set($attributes);
+		(new Dot($entity))->set(array_merge($attributes, $overriddenAttributes));
 
 		unset(self::$createdStack[$this->class]);
 
 		if (empty(self::$createdStack)) {
-			$dot->set($overrides);
 			$this->fireHandlers($this->onComplete, self::$created);
 			self::$created = [];
 		}

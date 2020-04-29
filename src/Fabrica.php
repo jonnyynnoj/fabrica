@@ -28,7 +28,7 @@ class Fabrica
 		self::$defined[$class] = $definition;
 	}
 
-	public static function create(string $class, array $overrides = [])
+	public static function create(string $class, callable $overrides = null)
 	{
 		return self::of($class)->create($overrides);
 	}

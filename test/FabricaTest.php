@@ -64,10 +64,12 @@ class FabricaTest extends TestCase
 			];
 		});
 
-		$user = Fabrica::create(User::class, [
-			'@setFirstName' => 'Another',
-			'lastName' => 'Person',
-		]);
+		$user = Fabrica::create(User::class, function () {
+			return [
+				'@setFirstName' => 'Another',
+				'lastName' => 'Person',
+			];
+		});
 
 		self::assertEquals('Another', $user->firstName);
 		self::assertEquals('Person', $user->lastName);
@@ -126,9 +128,11 @@ class FabricaTest extends TestCase
 			];
 		});
 
-		$user = Fabrica::create(User::class, [
-			'posts.0.title' => 'My new post'
-		]);
+		$user = Fabrica::create(User::class, function () {
+			return [
+				'posts.0.title' => 'My new post'
+			];
+		});
 
 		self::assertCount(1, $user->posts);
 		self::assertInstanceOf(Post::class, $user->posts[0]);
@@ -156,6 +160,37 @@ class FabricaTest extends TestCase
 		self::assertCount(1, $user->posts);
 		self::assertInstanceOf(Post::class, $user->posts[0]);
 		self::assertSame($user, $user->posts[0]->user);
+	}
+
+	/** @test */
+	public function it_can_handle_overridden_cyclical_references()
+	{
+		$this->defineUser(function () {
+			return [
+				'@addPost' => Fabrica::create(Post::class)
+			];
+		});
+
+		Fabrica::define(Post::class, function () {
+			return [
+				'user' => Fabrica::create(User::class)
+			];
+		});
+
+		$post = Fabrica::create(Post::class, function () {
+			return [
+				'user' => Fabrica::create(User::class, function () {
+					return [
+						'firstName' => 'Overridden'
+					];
+				})
+			];
+		});
+
+		self::assertEquals('Overridden', $post->user->firstName);
+		self::assertCount(1, $post->user->posts);
+		self::assertSame($post, $post->user->posts[0]);
+		self::assertSame($post->user, $post->user->posts[0]->user);
 	}
 
 	/** @test */
