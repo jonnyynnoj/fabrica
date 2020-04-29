@@ -247,4 +247,31 @@ class FabricaTest extends TestCase
 		self::assertEquals('changed', $user->posts[0]->user->firstName);
 		self::assertEquals('changed', $user->posts[0]->userFirstName);
 	}
+
+	/** @test */
+	public function it_can_sync_properties_to_related_entites()
+	{
+		$this->defineUser(function () {
+			return [
+				'@addPost' => Fabrica::create(Post::class)
+			];
+		});
+
+		Fabrica::define(Post::class, function () {
+			return [
+				'user' => Fabrica::create(User::class)
+			];
+		})->syncProperty('userFirstName', 'user.firstName');
+
+		$post = Fabrica::create(Post::class);
+		self::assertEquals($post->userFirstName, $post->user->firstName);
+
+		$user = Fabrica::create(User::class, function () {
+			return ['firstName' => 'changed'];
+		});
+
+		self::assertEquals('changed', $user->firstName);
+		self::assertEquals('changed', $user->posts[0]->user->firstName);
+		self::assertEquals('changed', $user->posts[0]->userFirstName);
+	}
 }
