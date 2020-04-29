@@ -23,4 +23,6 @@ class Post
 
 	/** @Column */
 	public $body;
+
+	public $userFirstName;
 }

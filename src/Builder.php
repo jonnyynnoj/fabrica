@@ -11,13 +11,12 @@ class Builder
 	private $instances = 1;
 	private $defineArguments = [];
 
-	private $onCreated = [];
 	private $onComplete = [];
 
 	private static $created = [];
 	private static $createdStack = [];
 
-	public function __construct(string $class, callable $definition)
+	public function __construct(string $class, Definition $definition)
 	{
 		$this->class = $class;
 		$this->definition = $definition;
@@ -32,12 +31,6 @@ class Builder
 	public function defineArguments(array $defineArguments): self
 	{
 		$this->defineArguments = $defineArguments;
-		return $this;
-	}
-
-	public function onCreated(callable $onCreated): self
-	{
-		$this->onCreated[] = $onCreated;
 		return $this;
 	}
 
@@ -70,30 +63,31 @@ class Builder
 		}
 
 		$entity = new $this->class;
-		self::$created[] = $entity;
+		self::$created[] = [$entity, $this->definition];
 		self::$createdStack[$this->class] = $entity;
 
-		$attributes = ($this->definition)(...$this->defineArguments);
-		$overriddenAttributes = is_callable($overrides) ? $overrides(...$this->defineArguments) : [];
-
-		(new Dot($entity))->set(array_merge($attributes, $overriddenAttributes));
+		$attributes = $this->definition->getAttributes($overrides, ...$this->defineArguments);
+		(new Dot($entity))->set($attributes);
 
 		unset(self::$createdStack[$this->class]);
 
 		if (empty(self::$createdStack)) {
-			$this->fireHandlers($this->onComplete, self::$created);
-			self::$created = [];
+			$this->cleanUp();
 		}
-
-		$this->fireHandlers($this->onCreated, $entity);
 
 		return $entity;
 	}
 
-	private function fireHandlers(array $handlers, $value)
+	private function cleanUp()
 	{
-		foreach ($handlers as $handler) {
-			$handler($value);
+		foreach (self::$created as $item) {
+			$item[1]->fireCallbacks($item[0], ...$this->defineArguments);
 		}
+
+		foreach ($this->onComplete as $handler) {
+			$handler(self::$created);
+		}
+
+		self::$created = [];
 	}
 }

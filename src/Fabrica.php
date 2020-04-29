@@ -12,7 +12,7 @@ class Fabrica
 	/** @var StoreInterface|null */
 	private static $store;
 
-	/** @var callable[] */
+	/** @var Definition[] */
 	private static $defined = [];
 
 	private static $defineArguments = [];
@@ -23,9 +23,9 @@ class Fabrica
 		self::$defined = [];
 	}
 
-	public static function define(string $class, callable $definition)
+	public static function define(string $class, callable $definition): Definition
 	{
-		self::$defined[$class] = $definition;
+		return self::$defined[$class] = new Definition($definition);
 	}
 
 	public static function create(string $class, callable $overrides = null)
@@ -45,7 +45,7 @@ class Fabrica
 			->onComplete(function ($entities) {
 				if (self::$store) {
 					foreach ($entities as $entity) {
-						self::$store->save($entity);
+						self::$store->save($entity[0]);
 					}
 				}
 			});

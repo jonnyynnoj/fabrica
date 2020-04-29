@@ -207,4 +207,44 @@ class FabricaTest extends TestCase
 
 		Fabrica::create(User::class);
 	}
+
+	/** @test */
+	public function it_can_fire_on_created_callback()
+	{
+		$this->defineUser();
+
+		Fabrica::define(Post::class, function () {
+			return ['user' => Fabrica::create(User::class)];
+		})->onCreated(function (Post $post) {
+			$post->userFirstName = $post->user->firstName;
+		});
+
+		$post = Fabrica::create(Post::class);
+
+		self::assertEquals($post->userFirstName, $post->user->firstName);
+	}
+
+	/** @test */
+	public function it_can_fire_on_created_callback_for_child_entities()
+	{
+		$this->defineUser(function () {
+			return [
+				'@addPost' => Fabrica::create(Post::class)
+			];
+		});
+
+		Fabrica::define(Post::class, function () {
+			return ['user' => Fabrica::create(User::class)];
+		})->onCreated(function (Post $post) {
+			$post->userFirstName = $post->user->firstName;
+		});
+
+		$user = Fabrica::create(User::class, function () {
+			return ['firstName' => 'changed'];
+		});
+
+		self::assertEquals('changed', $user->firstName);
+		self::assertEquals('changed', $user->posts[0]->user->firstName);
+		self::assertEquals('changed', $user->posts[0]->userFirstName);
+	}
 }
