@@ -31,7 +31,7 @@ trait TestEntities
 
 	private function definePost(callable $definition = null)
 	{
-		Fabrica::define(Post::class, function () use ($definition) {
+		return Fabrica::define(Post::class, function () use ($definition) {
 			return array_merge([
 				'title' => 'My first post',
 				'body' => 'Something revolutionary',

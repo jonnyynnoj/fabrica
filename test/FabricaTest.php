@@ -211,17 +211,11 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_fire_on_created_callback()
 	{
-		$this->defineUser();
-
-		Fabrica::define(Post::class, function () {
-			return ['user' => Fabrica::create(User::class)];
-		})->onCreated(function (Post $post) {
-			$post->userFirstName = $post->user->firstName;
+		$this->definePost()->onCreated(function (Post $post) {
+			self::assertEquals('My first post', $post->title);
 		});
 
-		$post = Fabrica::create(Post::class);
-
-		self::assertEquals($post->userFirstName, $post->user->firstName);
+		Fabrica::create(Post::class);
 	}
 
 	/** @test */
@@ -233,23 +227,30 @@ class FabricaTest extends TestCase
 			];
 		});
 
-		Fabrica::define(Post::class, function () {
-			return ['user' => Fabrica::create(User::class)];
-		})->onCreated(function (Post $post) {
-			$post->userFirstName = $post->user->firstName;
+		$this->definePost()->onCreated(function (Post $post) {
+			self::assertEquals('My first post', $post->title);
 		});
 
-		$user = Fabrica::create(User::class, function () {
-			return ['firstName' => 'changed'];
-		});
-
-		self::assertEquals('changed', $user->firstName);
-		self::assertEquals('changed', $user->posts[0]->user->firstName);
-		self::assertEquals('changed', $user->posts[0]->userFirstName);
+		Fabrica::create(User::class);
 	}
 
 	/** @test */
-	public function it_can_sync_properties_to_related_entites()
+	public function it_can_sync_properties_to_related_entities()
+	{
+		$this->defineUser();
+
+		Fabrica::define(Post::class, function () {
+			return [
+				'user' => Fabrica::create(User::class)
+			];
+		})->syncProperty('userFirstName', 'user.firstName');
+
+		$post = Fabrica::create(Post::class);
+		self::assertEquals($post->userFirstName, $post->user->firstName);
+	}
+
+	/** @test */
+	public function it_can_sync_properties_to_overridden_entities()
 	{
 		$this->defineUser(function () {
 			return [
