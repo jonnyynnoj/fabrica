@@ -264,9 +264,6 @@ class FabricaTest extends TestCase
 			];
 		})->syncProperty('userFirstName', 'user.firstName');
 
-		$post = Fabrica::create(Post::class);
-		self::assertEquals($post->userFirstName, $post->user->firstName);
-
 		$user = Fabrica::create(User::class, function () {
 			return ['firstName' => 'changed'];
 		});

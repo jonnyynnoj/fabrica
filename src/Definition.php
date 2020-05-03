@@ -21,15 +21,17 @@ class Definition
 		return array_merge($attributes, $overriddenAttributes);
 	}
 
-	public function syncProperty(string $to, string $from)
+	public function syncProperty(string $to, string $from): self
 	{
 		$this->onCreated(function ($entity) use ($to, $from) {
 			$dot = Dot::from($entity);
 			$dot->set($to, $dot->get($from));
 		});
+
+		return $this;
 	}
 
-	public function onCreated(callable $callback)
+	public function onCreated(callable $callback): self
 	{
 		$this->callbacks[] = $callback;
 		return $this;
