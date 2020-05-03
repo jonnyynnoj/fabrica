@@ -3,7 +3,6 @@
 namespace Noj\Fabrica\Test;
 
 use Noj\Fabrica\Fabrica;
-use Noj\Fabrica\Test\Entities\Address;
 use Noj\Fabrica\Test\Entities\Post;
 use Noj\Fabrica\Test\Entities\User;
 
@@ -17,15 +16,6 @@ trait TestEntities
 				'lastName' => 'User',
 				'age' => 36,
 			], $definition ? $definition() : []);
-		});
-
-		Fabrica::define(Address::class, function () {
-			return [
-				'street' => '1 Some Street',
-				'city' => 'Test Street',
-				'country' => 'Somewhere',
-				'postCode' => 'AB12 3CD',
-			];
 		});
 	}
 
