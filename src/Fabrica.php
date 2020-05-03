@@ -6,6 +6,7 @@ use Noj\Fabrica\Store\StoreInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
+use function Noj\Dot\get;
 
 class Fabrica
 {
@@ -49,6 +50,18 @@ class Fabrica
 					}
 				}
 			});
+	}
+
+	public static function call(callable $callable): CallableProperty
+	{
+		return new CallableProperty($callable);
+	}
+
+	public static function property(string $path): CallableProperty
+	{
+		return self::call(function ($entity) use ($path) {
+			return get($entity, $path);
+		});
 	}
 
 	public static function loadFactories(array $paths)

@@ -2,33 +2,35 @@
 
 namespace Noj\Fabrica;
 
-use Noj\Dot\Dot;
+use function Noj\Dot\set;
 
 class Definition
 {
-	private $attributes;
+	private $defaults;
 	private $callbacks = [];
+	private $attributes = [];
 
-	public function __construct(callable $attributes)
+	public function __construct(callable $defaults)
 	{
-		$this->attributes = $attributes;
+		$this->defaults = $defaults;
+		$this->onCreated([$this, 'applyCallableProperties']);
 	}
 
 	public function getAttributes(callable $overrides = null, ...$args): array
 	{
-		$attributes = ($this->attributes)(...$args);
-		$overriddenAttributes = is_callable($overrides) ? $overrides(...$args) : [];
-		return array_merge($attributes, $overriddenAttributes);
+		return $this->attributes = array_merge(
+			($this->defaults)(...$args),
+			is_callable($overrides) ? $overrides(...$args) : []
+		);
 	}
 
-	public function syncProperty(string $to, string $from): self
+	private function applyCallableProperties($entity)
 	{
-		$this->onCreated(function ($entity) use ($to, $from) {
-			$dot = Dot::from($entity);
-			$dot->set($to, $dot->get($from));
-		});
-
-		return $this;
+		foreach ($this->attributes as $attribute => $value) {
+			if ($value instanceof CallableProperty) {
+				set($entity, $attribute, $value->apply($entity));
+			}
+		}
 	}
 
 	public function onCreated(callable $callback): self

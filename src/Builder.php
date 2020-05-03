@@ -2,7 +2,7 @@
 
 namespace Noj\Fabrica;
 
-use Noj\Dot\Dot;
+use function Noj\Dot\set;
 
 class Builder
 {
@@ -67,7 +67,7 @@ class Builder
 		self::$createdStack[$this->class] = $entity;
 
 		$attributes = $this->definition->getAttributes($overrides, ...$this->defineArguments);
-		(new Dot($entity))->set($attributes);
+		set($entity, $attributes);
 
 		unset(self::$createdStack[$this->class]);
 

@@ -235,22 +235,23 @@ class FabricaTest extends TestCase
 	}
 
 	/** @test */
-	public function it_can_sync_properties_to_related_entities()
+	public function it_can_set_property_to_same_as_relation_property()
 	{
 		$this->defineUser();
 
 		Fabrica::define(Post::class, function () {
 			return [
-				'user' => Fabrica::create(User::class)
+				'user' => Fabrica::create(User::class),
+				'userFirstName' => Fabrica::property('user.firstName')
 			];
-		})->syncProperty('userFirstName', 'user.firstName');
+		});
 
 		$post = Fabrica::create(Post::class);
 		self::assertEquals($post->userFirstName, $post->user->firstName);
 	}
 
 	/** @test */
-	public function it_can_sync_properties_to_overridden_entities()
+	public function it_can_set_property_to_same_as_overridden_relation_property()
 	{
 		$this->defineUser(function () {
 			return [
@@ -260,9 +261,10 @@ class FabricaTest extends TestCase
 
 		Fabrica::define(Post::class, function () {
 			return [
-				'user' => Fabrica::create(User::class)
+				'user' => Fabrica::create(User::class),
+				'userFirstName' => Fabrica::property('user.firstName')
 			];
-		})->syncProperty('userFirstName', 'user.firstName');
+		});
 
 		$user = Fabrica::create(User::class, function () {
 			return ['firstName' => 'changed'];
