@@ -24,9 +24,9 @@ class Fabrica
 		self::$defined = [];
 	}
 
-	public static function define(string $class, callable $definition): Definition
+	public static function define(string $class, callable $definition, string $type = 'default'): Definition
 	{
-		return self::$defined[$class] = new Definition($definition);
+		return self::$defined[$class][$type] = new Definition($definition);
 	}
 
 	public static function create(string $class, callable $overrides = null)
@@ -34,14 +34,13 @@ class Fabrica
 		return self::of($class)->create($overrides);
 	}
 
-	public static function of($class, int $instances = 1): Builder
+	public static function of($class, string $type = 'default'): Builder
 	{
 		if (!isset(self::$defined[$class])) {
 			throw new FabricaException("No definition found for $class");
 		}
 
-		return (new Builder($class, self::$defined[$class]))
-			->instances($instances)
+		return (new Builder($class, self::$defined[$class][$type]))
 			->defineArguments(self::$defineArguments)
 			->onComplete(function ($entities) {
 				if (self::$store) {

@@ -81,7 +81,7 @@ class FabricaTest extends TestCase
 	{
 		$this->defineUser();
 
-		$users = Fabrica::of(User::class, 2)->create();
+		$users = Fabrica::of(User::class)->instances(2)->create();
 
 		self::assertCount(2, $users);
 		self::assertContainsOnlyInstancesOf(User::class, $users);
@@ -102,7 +102,7 @@ class FabricaTest extends TestCase
 				'firstName' => 'Test',
 				'@setLastName' => 'User',
 				'age' => 47,
-				'@addPost*' => Fabrica::of(Post::class, 3)->create()
+				'@addPost*' => Fabrica::of(Post::class)->instances(3)->create()
 			];
 		});
 
@@ -273,5 +273,30 @@ class FabricaTest extends TestCase
 		self::assertEquals('changed', $user->firstName);
 		self::assertEquals('changed', $user->posts[0]->user->firstName);
 		self::assertEquals('changed', $user->posts[0]->userFirstName);
+	}
+
+	/** @test */
+	public function it_can_create_types_of_entities()
+	{
+		$this->defineUser();
+
+		Fabrica::define(User::class, function () {
+			return [
+				'firstName' => 'Banned',
+				'lastName' => 'User',
+				'banned' => true
+			];
+		}, 'banned');
+
+		$user = Fabrica::create(User::class);
+		$bannedUser = Fabrica::of(User::class, 'banned')->create();
+
+		self::assertEquals('Test', $user->firstName);
+		self::assertEquals('User', $user->lastName);
+		self::assertFalse($user->banned);
+
+		self::assertEquals('Banned', $bannedUser->firstName);
+		self::assertEquals('User', $bannedUser->lastName);
+		self::assertTrue($bannedUser->banned);
 	}
 }

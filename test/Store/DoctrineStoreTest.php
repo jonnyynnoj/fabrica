@@ -100,7 +100,7 @@ class DoctrineStoreTest extends TestCase
 	public function it_can_create_multiple_relations()
 	{
 		$this->defineUser(function () {
-			return ['@addPost*' => Fabrica::of(Post::class, 3)->create()];
+			return ['@addPost*' => Fabrica::of(Post::class)->instances(3)->create()];
 		});
 
 		$this->definePost(function () {

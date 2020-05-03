@@ -25,6 +25,9 @@ class User
 
 	/** @Column */
 	public $age;
+	
+	/** @Column */
+	public $banned = false;
 
 	/** @OneToMany(targetEntity="Noj\Fabrica\Test\Entities\Post", mappedBy="user", cascade={"persist", "remove"}) */
 	public $posts;
