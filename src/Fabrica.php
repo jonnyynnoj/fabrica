@@ -10,6 +10,8 @@ use function Noj\Dot\get;
 
 class Fabrica
 {
+	const DEFAULT_TYPE = 'default';
+
 	/** @var StoreInterface|null */
 	private static $store;
 
@@ -24,9 +26,23 @@ class Fabrica
 		self::$defined = [];
 	}
 
-	public static function define(string $class, callable $definition, string $type = 'default'): Definition
-	{
-		return self::$defined[$class][$type] = new Definition($definition);
+	public static function define(
+		string $class,
+		callable $attributes,
+		string $type = self::DEFAULT_TYPE,
+		$extends = null
+	): Definition {
+		$definition = new Definition($attributes);
+
+		if ($extends === true) {
+			$extends = self::DEFAULT_TYPE;
+		}
+
+		if ($extends && isset(self::$defined[$class][$extends])) {
+			$definition->extend(self::$defined[$class][$extends]);
+		}
+
+		return self::$defined[$class][$type] = $definition;
 	}
 
 	public static function create(string $class, callable $overrides = null)
@@ -34,7 +50,7 @@ class Fabrica
 		return self::of($class)->create($overrides);
 	}
 
-	public static function of($class, string $type = 'default'): Builder
+	public static function of($class, string $type = self::DEFAULT_TYPE): Builder
 	{
 		if (!isset(self::$defined[$class])) {
 			throw new FabricaException("No definition found for $class");

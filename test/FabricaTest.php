@@ -299,4 +299,31 @@ class FabricaTest extends TestCase
 		self::assertEquals('User', $bannedUser->lastName);
 		self::assertTrue($bannedUser->banned);
 	}
+
+	/** @test */
+	public function it_can_define_entity_that_extends_another()
+	{
+		$this->defineUser();
+
+		Fabrica::define(User::class, function () {
+			return [
+				'banned' => true
+			];
+		}, 'banned', true);
+
+		Fabrica::define(User::class, function () {
+			return [
+				'firstName' => 'Banned'
+			];
+		}, 'banned2', 'banned');
+
+		$user = Fabrica::of(User::class, 'banned2')->create(function () {
+			return ['age' => 28];
+		});
+
+		self::assertEquals('Banned', $user->firstName);
+		self::assertEquals('User', $user->lastName);
+		self::assertEquals(28, $user->age);
+		self::assertTrue($user->banned);
+	}
 }

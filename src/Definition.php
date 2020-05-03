@@ -10,6 +10,9 @@ class Definition
 	private $callbacks = [];
 	private $attributes = [];
 
+	/** @var null|Definition */
+	private $parent;
+
 	public function __construct(callable $defaults)
 	{
 		$this->defaults = $defaults;
@@ -18,7 +21,10 @@ class Definition
 
 	public function getAttributes(callable $overrides = null, ...$args): array
 	{
+		$parentAttributes = $this->parent ? $this->parent->getAttributes(null, ...$args) : [];
+
 		return $this->attributes = array_merge(
+			$parentAttributes,
 			($this->defaults)(...$args),
 			is_callable($overrides) ? $overrides(...$args) : []
 		);
@@ -44,5 +50,11 @@ class Definition
 		foreach ($this->callbacks as $callback) {
 			$callback($entity, ...$args);
 		}
+	}
+
+	public function extend(Definition $definition): self
+	{
+		$this->parent = $definition;
+		return $this;
 	}
 }
