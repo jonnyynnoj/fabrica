@@ -27,15 +27,25 @@ class Fabrica
 		return Registry::register($definition);
 	}
 
-	public static function create(string $class, callable $overrides = null)
+	public static function create(string $class, ...$args)
 	{
-		return self::of($class)->create($overrides);
+		$type = $args && is_string($args[0]) ? array_shift($args) : Definition::DEFAULT_TYPE;
+		$overrides = $args && is_callable($args[0]) ? $args[0] : null;
+
+		return self::of($class, $type)
+			->create($overrides);
 	}
 
 	public static function createMany(string $class, int $amount, callable $overrides = null)
 	{
 		return self::of($class)
 			->instances($amount)
+			->create($overrides);
+	}
+
+	public static function createType(string $class, string $type, callable $overrides = null)
+	{
+		return self::of($class, $type)
 			->create($overrides);
 	}
 

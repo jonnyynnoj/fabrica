@@ -290,7 +290,7 @@ class FabricaTest extends TestCase
 		})->type('banned');
 
 		$user = Fabrica::create(User::class);
-		$bannedUser = Fabrica::of(User::class, 'banned')->create();
+		$bannedUser = Fabrica::create(User::class, 'banned');
 
 		self::assertEquals('Test', $user->firstName);
 		self::assertEquals('User', $user->lastName);
@@ -318,7 +318,7 @@ class FabricaTest extends TestCase
 			];
 		})->type('banned2')->extends(User::class, 'banned');
 
-		$user = Fabrica::of(User::class, 'banned2')->create(function () {
+		$user = Fabrica::create(User::class, 'banned2', function () {
 			return ['age' => 28];
 		});
 
