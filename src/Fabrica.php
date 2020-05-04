@@ -32,6 +32,13 @@ class Fabrica
 		return self::of($class)->create($overrides);
 	}
 
+	public static function createMany(string $class, int $amount, callable $overrides = null)
+	{
+		return self::of($class)
+			->instances($amount)
+			->create($overrides);
+	}
+
 	public static function of($class, string $type = Definition::DEFAULT_TYPE): Builder
 	{
 		return (new Builder($class, Registry::get($class, $type)))

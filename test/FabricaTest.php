@@ -82,7 +82,7 @@ class FabricaTest extends TestCase
 	{
 		$this->defineUser();
 
-		$users = Fabrica::of(User::class)->instances(2)->create();
+		$users = Fabrica::createMany(User::class, 2);
 
 		self::assertCount(2, $users);
 		self::assertContainsOnlyInstancesOf(User::class, $users);
@@ -103,7 +103,7 @@ class FabricaTest extends TestCase
 				'firstName' => 'Test',
 				'@setLastName' => 'User',
 				'age' => 47,
-				'@addPost*' => Fabrica::of(Post::class)->instances(3)->create()
+				'@addPost*' => Fabrica::createMany(Post::class, 3)
 			];
 		});
 
