@@ -94,7 +94,7 @@ self::assertEquals(24, $user->getAge());
 You can create multiple entities like so:
 
 ```php
-$users = Fabrica::of(User::class, 3)->create();
+$users = Fabrica::createMany(User::class, 3);
 ```
 
 ### Relations
@@ -113,7 +113,7 @@ Fabrica::define(Comment::class, function () {
 });
 ```
 
-And then whenever a `Comment` is created it will have an associated `User`:
+Whenever a `Comment` is created it will have an associated `User`:
 
 ```php
 $comment = Fabrica::create(Comment::class);
@@ -143,7 +143,7 @@ Using the multiple times suffix (`*`) explained above, you can create multiple c
 Fabrica::define(User::class, function () {
     return [
         //...,
-        '@addComment*' => Fabrica::of(Comment::class, 3)->create()
+        '@addComment*' => Fabrica::createMany(Comment::class, 3)
     ];
 });
 ```
@@ -189,6 +189,53 @@ $user = Fabrica::create(User::class, function () {
 foreach ($user->comments as $comment) {
     self::assertEquals('Each comment now has this title', $comment->title);
 }
+```
+
+### Entity Types
+
+Rather than always having to pass overrides when creating entities, you can define different types of entities:
+
+```php
+Fabrica::define(User::class, function () {
+    return [
+        'username' => 'bannedUser',
+        'firstName' => 'Test',
+        'lastName' => 'User',
+    ];
+})->type('banned');
+
+$normalUser = Fabrica::create(User::class);
+$bannedUser = Fabrica::create(User::class, 'banned');
+$bannedUser2 = Fabrica::create(User::class, 'banned', function () {
+    return ['firstName' => 'banned'];
+});
+```
+
+#### Extending
+
+If a sub-type shares attributes with the parent-type then you can specify that the factory extends from it:
+
+```php
+Fabrica::define(User::class, function () {
+    return [
+        'username' => 'bannedUser'
+    ];
+})->type('banned')->extends(User::class);
+
+$bannedUser = Fabrica::create(User::class, 'banned');
+self::assertEquals('bannedUser', $bannedUser->username);
+self::assertEquals('Test', $bannedUser->firstName);
+self::assertEquals('User', $bannedUser->lastName);
+```
+
+You can also extend from a sub-type:
+
+```php
+Fabrica::define(User::class, function () {
+    return [
+        'permanent' => true
+    ];
+})->type('permaBanned')->extends(User::class, 'banned);
 ```
 
 ### Doctrine Integration
