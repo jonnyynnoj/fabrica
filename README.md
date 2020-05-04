@@ -99,8 +99,6 @@ $users = Fabrica::createMany(User::class, 3);
 
 ### Relations
 
-#### Many to One
-
 You can automatically create related entities. For example, if you have `Comment` entity that belongs to a `User` then you can define a factory:
 
 ```php
@@ -122,9 +120,7 @@ self::assertInstanceOf(User::class, $comment->user);
 self::assertEquals('user123', $comment->user->username);
 ```
 
-#### One to Many
-
-You can also define the inverse side of the relation. For example you can define that each created `User` should have an associated `Comment`:
+You can also define the inverse side of the relation. For example, you can define that each created `User` should have an associated `Comment`:
 
 ```php
 Fabrica::define(User::class, function () {
@@ -137,17 +133,31 @@ Fabrica::define(User::class, function () {
 });
 ```
 
-Using the multiple times suffix (`*`) explained above, you can create multiple child entities:
+You can create multiple child relations:
 
 ```php
 Fabrica::define(User::class, function () {
     return [
-        //...,
-        '@addComment*' => Fabrica::createMany(Comment::class, 3)
+        'comments' => Fabrica::createMany(Comment::class, 3),
+
+        // or if you have a setter method, use the `*` suffix to call the method
+        // once for each element of the array
+        '@addComment*' => Fabrica::createMany(Comment::class, 3),
     ];
 });
 ```
-Will create a `User` with 3 `Comments`
+Will create a `User` with 3 `Comments`.
+
+If the entity has a property that depends on the relation then you can define this like so:
+
+```php
+Fabrica::define(Comment::class, function () {
+    return [
+        'user' => Fabrica::create(User::class),
+        'userFirstName' => Fabrica::property('user.firstName'),
+    ];
+});
+```
 
 #### Overriding Relation Properties
 
