@@ -6,6 +6,8 @@ use function Noj\Dot\set;
 
 class Definition
 {
+	const DEFAULT_TYPE = 'default';
+
 	private $defaults;
 	private $callbacks = [];
 	private $attributes = [];
@@ -13,9 +15,18 @@ class Definition
 	/** @var null|Definition */
 	private $parent;
 
-	public function __construct(callable $defaults)
+	public $class;
+
+	/** @var string */
+	public $type = self::DEFAULT_TYPE;
+
+	public function __construct(string $class, callable $defaults = null)
 	{
-		$this->defaults = $defaults;
+		$this->class = $class;
+		$this->defaults = $defaults ?? function() {
+			return [];
+		};
+
 		$this->onCreated([$this, 'applyCallableProperties']);
 	}
 
@@ -52,9 +63,15 @@ class Definition
 		}
 	}
 
-	public function extend(Definition $definition): self
+	public function type(string $type): self
 	{
-		$this->parent = $definition;
+		$this->type = $type;
+		return $this;
+	}
+
+	public function extends(string $class, string $type = self::DEFAULT_TYPE): self
+	{
+		$this->parent = Registry::get($class, $type);
 		return $this;
 	}
 }

@@ -4,6 +4,7 @@ namespace Noj\Fabrica\Test;
 
 use Noj\Fabrica\Fabrica;
 use Noj\Fabrica\Test\Entities\Post;
+use Noj\Fabrica\Test\Entities\SuperUser;
 use Noj\Fabrica\Test\Entities\User;
 use PHPUnit\Framework\TestCase;
 
@@ -286,7 +287,7 @@ class FabricaTest extends TestCase
 				'lastName' => 'User',
 				'banned' => true
 			];
-		}, 'banned');
+		})->type('banned');
 
 		$user = Fabrica::create(User::class);
 		$bannedUser = Fabrica::of(User::class, 'banned')->create();
@@ -309,13 +310,13 @@ class FabricaTest extends TestCase
 			return [
 				'banned' => true
 			];
-		}, 'banned', true);
+		})->type('banned')->extends(User::class);
 
 		Fabrica::define(User::class, function () {
 			return [
 				'firstName' => 'Banned'
 			];
-		}, 'banned2', 'banned');
+		})->type('banned2')->extends(User::class, 'banned');
 
 		$user = Fabrica::of(User::class, 'banned2')->create(function () {
 			return ['age' => 28];
@@ -325,5 +326,27 @@ class FabricaTest extends TestCase
 		self::assertEquals('User', $user->lastName);
 		self::assertEquals(28, $user->age);
 		self::assertTrue($user->banned);
+	}
+
+	/** @test */
+	public function it_can_extend_different_class()
+	{
+		$this->defineUser();
+
+		Fabrica::define(SuperUser::class, function () {
+			return [
+				'age' => 72
+			];
+		})->extends(User::class);
+
+		$superUser = Fabrica::create(SuperUser::class, function () {
+			return [
+				'firstName' => 'Super'
+			];
+		});
+
+		self::assertEquals('Super', $superUser->firstName);
+		self::assertEquals('User', $superUser->lastName);
+		self::assertEquals(72, $superUser->age);
 	}
 }
