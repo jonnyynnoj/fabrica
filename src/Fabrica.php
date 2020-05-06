@@ -2,6 +2,7 @@
 
 namespace Noj\Fabrica;
 
+use Noj\Fabrica\Builder\Builder;
 use Noj\Fabrica\Store\StoreInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -53,11 +54,9 @@ class Fabrica
 	{
 		return (new Builder($class, Registry::get($class, $type)))
 			->defineArguments(self::$defineArguments)
-			->onComplete(function ($entities) {
+			->onComplete(function (array $results) {
 				if (self::$store) {
-					foreach ($entities as $entity) {
-						self::$store->save($entity[0]);
-					}
+					self::$store->save($results);
 				}
 			});
 	}

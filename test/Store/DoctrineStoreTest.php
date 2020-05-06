@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use Noj\Fabrica\Fabrica;
+use Noj\Fabrica\Test\Entities\Address;
 use Noj\Fabrica\Test\Entities\Post;
 use Noj\Fabrica\Test\Entities\User;
 use Noj\Fabrica\Store\DoctrineStore;
@@ -120,5 +121,27 @@ class DoctrineStoreTest extends TestCase
 		foreach ($users[0]->posts as $post) {
 			self::assertSame($users[0], $post->user);
 		}
+	}
+
+	/** @test */
+	public function it_can_handle_emdeddables()
+	{
+		$this->defineUser(function () {
+			return ['address' => Fabrica::create(Address::class)];
+		});
+
+		Fabrica::define(Address::class, function () {
+			return [
+				'street' => '1 Test Street',
+				'city' => 'Test City',
+				'country' => 'Test'
+			];
+		});
+
+		$user = Fabrica::create(User::class);
+
+		self::assertInstanceOf(User::class, $user);
+		self::assertInstanceOf(Address::class, $user->address);
+		self::assertEquals('1 Test Street', $user->address->street);
 	}
 }

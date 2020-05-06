@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Noj\Fabrica;
+namespace Noj\Fabrica\Builder;
 
+use Noj\Fabrica\Definition;
 use function Noj\Dot\set;
 
 class Builder
@@ -13,6 +14,7 @@ class Builder
 
 	private $onComplete = [];
 
+	/** @var Result[] */
 	private static $created = [];
 	private static $createdStack = [];
 
@@ -63,7 +65,7 @@ class Builder
 		}
 
 		$entity = new $this->class;
-		self::$created[] = [$entity, $this->definition];
+		self::$created[] = new Result($this->definition, $entity);
 		self::$createdStack[$this->class] = $entity;
 
 		$attributes = $this->definition->getAttributes($overrides, ...$this->defineArguments);
@@ -80,8 +82,8 @@ class Builder
 
 	private function cleanUp()
 	{
-		foreach (self::$created as $item) {
-			$item[1]->fireCallbacks($item[0], ...$this->defineArguments);
+		foreach (self::$created as $result) {
+			$result->definition->fireCallbacks($result->entity, ...$this->defineArguments);
 		}
 
 		foreach ($this->onComplete as $handler) {

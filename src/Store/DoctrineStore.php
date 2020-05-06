@@ -3,6 +3,7 @@
 namespace Noj\Fabrica\Store;
 
 use Doctrine\ORM\EntityManager;
+use Noj\Fabrica\Builder\Result;
 
 class DoctrineStore implements StoreInterface
 {
@@ -13,9 +14,19 @@ class DoctrineStore implements StoreInterface
 		$this->entityManager = $entityManager;
 	}
 
-	public function save($entity)
+	/**
+	 * @param Result[] $results
+	 */
+	public function save(array $results)
 	{
-		$this->entityManager->persist($entity);
+		foreach ($results as $result) {
+			$metaData = $this->entityManager->getClassMetadata($result->definition->class);
+
+			if (!$metaData->isEmbeddedClass) {
+				$this->entityManager->persist($result->entity);
+			}
+		}
+
 		$this->entityManager->flush();
 	}
 }

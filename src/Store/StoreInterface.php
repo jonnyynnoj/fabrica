@@ -4,5 +4,5 @@ namespace Noj\Fabrica\Store;
 
 interface StoreInterface
 {
-	public function save($entity);
+	public function save(array $results);
 }

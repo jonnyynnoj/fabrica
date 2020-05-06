@@ -25,6 +25,9 @@ class User
 
 	/** @Column */
 	public $age;
+
+	/** @Embedded(class = "Address") */
+	public $address;
 	
 	/** @Column */
 	public $banned = false;
