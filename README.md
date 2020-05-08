@@ -299,7 +299,7 @@ Most likely you will want to reset the state of your database before each test r
     ```php
     class MyTest extends TestCase
     {
-      use \Noj\Fabrica\Adapter\Doctrine\PHPUnit\DatabaseFixtures;
+        use \Noj\Fabrica\Adapter\Doctrine\PHPUnit\DatabaseFixtures;
     }
     ```
   
