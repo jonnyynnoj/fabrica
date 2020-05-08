@@ -14,7 +14,7 @@ class FabricaTest extends TestCase
 
 	protected function setUp()
 	{
-		Fabrica::init();
+		Fabrica::setStore();
 	}
 
 	/** @test */

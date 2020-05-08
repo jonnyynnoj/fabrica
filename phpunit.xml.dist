@@ -4,7 +4,7 @@
 	backupStaticAttributes="false"
 	beStrictAboutTestsThatDoNotTestAnything="true"
 	beStrictAboutOutputDuringTests="true"
-	bootstrap="vendor/autoload.php"
+	bootstrap="test/bootstrap.php"
 	colors="true"
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
@@ -24,4 +24,7 @@
 			<directory suffix=".php">./src</directory>
 		</whitelist>
 	</filter>
+	<extensions>
+		<extension class="Noj\Fabrica\Adapter\Doctrine\PHPUnit\RefreshDatabase" />
+	</extensions>
 </phpunit>

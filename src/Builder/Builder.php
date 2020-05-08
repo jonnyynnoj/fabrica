@@ -3,6 +3,7 @@
 namespace Noj\Fabrica\Builder;
 
 use Noj\Fabrica\Definition;
+use Throwable;
 use function Noj\Dot\set;
 
 class Builder
@@ -41,6 +42,7 @@ class Builder
 		$this->onComplete[] = $onComplete;
 		return $this;
 	}
+
 	public function create(callable $overrides = null)
 	{
 		try {
@@ -51,7 +53,7 @@ class Builder
 			return array_map(function () use ($overrides) {
 				return $this->createEntity($overrides);
 			}, range(1, $this->instances));
-		} catch (\Throwable $throwable) {
+		} catch (Throwable $throwable) {
 			self::$created = [];
 			self::$createdStack = [];
 			throw $throwable;

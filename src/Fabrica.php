@@ -2,25 +2,22 @@
 
 namespace Noj\Fabrica;
 
+use Doctrine\ORM\EntityManager;
+use Noj\Fabrica\Adapter\Doctrine\DoctrineStore;
+use Noj\Fabrica\Adapter\StoreInterface;
 use Noj\Fabrica\Builder\Builder;
-use Noj\Fabrica\Store\StoreInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
+use SplFileInfo;
 use function Noj\Dot\get;
 
 class Fabrica
 {
-	/** @var StoreInterface|null */
-	private static $store;
-
 	private static $defineArguments = [];
 
-	public static function init(StoreInterface $store = null)
-	{
-		self::$store = $store;
-		Registry::clear();
-	}
+	/** @var StoreInterface|null */
+	private static $store;
 
 	public static function define(string $class, callable $attributes): Definition
 	{
@@ -80,7 +77,7 @@ class Fabrica
 			$iterator = new RecursiveIteratorIterator($directory);
 			$files = new RegexIterator($iterator, '/^.+\.php$/i');
 
-			/** @var \SplFileInfo $file */
+			/** @var SplFileInfo $file */
 			foreach ($files as $file) {
 				require $file->getPathname();
 			}
@@ -90,5 +87,24 @@ class Fabrica
 	public static function addDefineArgument($argument)
 	{
 		self::$defineArguments[] = $argument;
+	}
+
+	public static function setStore(StoreInterface $store)
+	{
+		self::$store = $store;
+	}
+
+	public static function getEntityManager(): EntityManager
+	{
+		if (!self::$store instanceof DoctrineStore) {
+			throw FabricaException::doctrineNotConfigured();
+		}
+
+		return self::$store->entityManager;
+	}
+
+	public static function reset()
+	{
+		Registry::clear();
 	}
 }

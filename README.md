@@ -14,7 +14,7 @@ composer require noj/fabrica --dev
 
 First initialise Fabrica somewhere within your test suite. For PHPUnit, this can be done using the `bootstrap` option:
 ```php
-Fabrica::init();
+require '../vendor/autoload.php';
 Fabrica::loadFactories([__DIR__ . '/factories']);
 ```
 
@@ -250,14 +250,65 @@ Fabrica::define(User::class, function () {
 
 ### Doctrine Integration
 
-Fabrica ships with a Doctrine implementation that will automatically persist your entities on creation.
+Fabrica ships with a Doctrine adapter that will automatically persist your entities on creation. Simply configure the store in your bootstrap file:
 
 ```php
-$store = new \Fabrica\Store\DoctrineStore($entityManager);
-Fabrica::init($store);
+Fabrica::setStore(new DoctrineStore($entityManager));
 ```
 
-You can see an example of configuring against an in-memory sqlite database in the [test directory](test/Store/DoctrineStoreTest.php).
+Where the EntityManager comes from and how it is configured may depend on your application.
+
+Fabrica provides a simple way of creating an annotation backed EntityManager using in-memory SQLite if that meets your requirements:
+```php
+$entityManager = \Noj\Fabrica\Adapter\Doctrine\EntityManagerFactory::createSQLiteInMemory([__DIR__ . '/path/to/entities']);
+Fabrica::setStore(new DoctrineStore($entityManager));
+```
+
+#### Refreshing the Database Between Tests
+
+Most likely you will want to reset the state of your database before each test runs. There are 2 ways of doing this:
+
+* If you are using PHPUnit 7.5 or above then you can add the following to your `phpunit.xml` which will reset your database between each test:
+    ```xml
+    <extensions>
+        <extension class="Noj\Fabrica\Adapter\Doctrine\PHPUnit\RefreshDatabase" />
+    </extensions>
+    ```
+* If you are using a lower version of PHPUnit or you would only like to create the database for specific tests then you add the `use` statement to your test class:
+    ```php
+    class MyTest extends TestCase
+    {
+      use \Noj\Fabrica\Adapter\Doctrine\PHPUnit\DatabaseFixtures;
+    }
+    ```
+  
+#### PHPUnit Assertions
+
+Fabrica ships with a set of PHPUnit assertions for validating the state of the database during a test.
+```php
+class MyTest extends TestCase
+{
+    use \Noj\Fabrica\Adapter\Doctrine\PHPUnit\DatabaseAssertions;
+}
+```
+
+This provides the following assertions:
+
+* `assertDatabaseContainsEntity(string $class, array $criteria = [])`
+* `assertDatabaseContainsEntities(string $class, int $amount, array $criteria = [])`
+* `assertDatabaseContainsExactlyOneEntity(string $class, array $criteria = [])`
+* `assertDatabaseDoesNotContainEntity(string $class, array $criteria = [])`
+
+Note: If you are using `DatabaseFixtures` described above then the assertions are already included.
+
+Example usage:
+```php
+public function test_it_creates_a_user()
+{
+    (new UserCreator)->create('test');
+    self::assertDatabaseContainsEntity(User::class, ['username' => 'test'])'
+}
+```
 
 ### Faker Integration
 

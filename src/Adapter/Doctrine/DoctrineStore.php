@@ -1,13 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Noj\Fabrica\Store;
+namespace Noj\Fabrica\Adapter\Doctrine;
 
 use Doctrine\ORM\EntityManager;
+use Noj\Fabrica\Adapter\StoreInterface;
 use Noj\Fabrica\Builder\Result;
 
 class DoctrineStore implements StoreInterface
 {
-	private $entityManager;
+	public $entityManager;
 
 	public function __construct(EntityManager $entityManager)
 	{
