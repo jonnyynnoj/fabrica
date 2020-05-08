@@ -1,5 +1,9 @@
 # Fabrica
 
+[![Latest Stable Version](https://poser.pugx.org/noj/fabrica/v/stable?format=flat-square)](https://packagist.org/packages/noj/fabrica)
+[![Total Downloads](https://poser.pugx.org/noj/fabrica/downloads?format=flat-square)](https://packagist.org/packages/noj/fabrica)
+[![License](https://poser.pugx.org/noj/fabrica/license?format=flat-square)](https://packagist.org/packages/noj/fabrica)
+
 Fabrica handles the definition and creation of objects for use in testing.
 
 - [Installing](#installing)
