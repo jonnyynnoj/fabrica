@@ -2,6 +2,22 @@
 
 Fabrica handles the definition and creation of objects for use in testing.
 
+- [Installing](#installing)
+- [Usage](#usage)
+    - [Setup](#setup)
+    - [Basic Usage](#basic-usage)
+    - [Setters](#setters)
+    - [Overrides](#overrides)
+    - [Create Multiple](#create-multiple)
+    - [Relations](#relations)
+        - [Overriding Relation Properties](#overriding-relation-properties)
+    - [Entity Types](#entity-types)
+        - [Extending](#extending)
+    - [Doctrine Integration](#doctrine-integration)
+        - [Refreshing the Database Between Tests](#refreshing-the-database-between-tests)
+        - [PHPUnit Assertions](#phpunit-assertions)
+    - [Faker Integration](#faker-integration)
+
 ## Installing
 
 ```
@@ -268,13 +284,13 @@ Fabrica::setStore(new DoctrineStore($entityManager));
 
 Most likely you will want to reset the state of your database before each test runs. There are 2 ways of doing this:
 
-* If you are using PHPUnit 7.5 or above then you can add the following to your `phpunit.xml` which will reset your database between each test:
+- If you are using PHPUnit 7.5 or above then you can add the following to your `phpunit.xml` which will reset your database between each test:
     ```xml
     <extensions>
         <extension class="Noj\Fabrica\Adapter\Doctrine\PHPUnit\RefreshDatabase" />
     </extensions>
     ```
-* If you are using a lower version of PHPUnit or you would only like to create the database for specific tests then you add the `use` statement to your test class:
+- If you are using a lower version of PHPUnit or you would only like to create the database for specific tests then you add the `use` statement to your test class:
     ```php
     class MyTest extends TestCase
     {
@@ -294,10 +310,10 @@ class MyTest extends TestCase
 
 This provides the following assertions:
 
-* `assertDatabaseContainsEntity(string $class, array $criteria = [])`
-* `assertDatabaseContainsEntities(string $class, int $amount, array $criteria = [])`
-* `assertDatabaseContainsExactlyOneEntity(string $class, array $criteria = [])`
-* `assertDatabaseDoesNotContainEntity(string $class, array $criteria = [])`
+- `assertDatabaseContainsEntity(string $class, array $criteria = [])`
+- `assertDatabaseContainsEntities(string $class, int $amount, array $criteria = [])`
+- `assertDatabaseContainsExactlyOneEntity(string $class, array $criteria = [])`
+- `assertDatabaseDoesNotContainEntity(string $class, array $criteria = [])`
 
 Note: If you are using `DatabaseFixtures` described above then the assertions are already included.
 
