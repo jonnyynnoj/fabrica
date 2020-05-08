@@ -17,6 +17,7 @@ Fabrica handles the definition and creation of objects for use in testing.
         - [Refreshing the Database Between Tests](#refreshing-the-database-between-tests)
         - [PHPUnit Assertions](#phpunit-assertions)
     - [Faker Integration](#faker-integration)
+- [Inspirations](#inspirations)
 
 ## Installing
 
@@ -348,3 +349,8 @@ Fabrica::define(User::class, function (Faker $faker) {
     ];
 });
 ```
+
+## Inspirations
+
+- [Laravel Factories](https://laravel.com/docs/database-testing)
+- [Factory Muffin](https://github.com/thephpleague/factory-muffin)
