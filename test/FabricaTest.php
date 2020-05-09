@@ -12,7 +12,8 @@ class FabricaTest extends TestCase
 {
 	use TestEntities;
 
-	protected function setUp()
+	/** @before */
+	protected function reset()
 	{
 		Fabrica::reset();
 	}
