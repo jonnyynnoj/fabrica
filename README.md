@@ -2,8 +2,9 @@
 
 [![Travis (.com)](https://img.shields.io/travis/com/jonnyynnoj/fabrica?style=flat-square)](https://travis-ci.com/github/jonnyynnoj/fabrica)
 [![Latest Stable Version](https://poser.pugx.org/noj/fabrica/v/stable?format=flat-square)](https://packagist.org/packages/noj/fabrica)
-[![Total Downloads](https://poser.pugx.org/noj/fabrica/downloads?format=flat-square)](https://packagist.org/packages/noj/fabrica)
+![PHP Version Support](https://img.shields.io/packagist/php-v/noj/fabrica?style=flat-square)
 [![License](https://poser.pugx.org/noj/fabrica/license?format=flat-square)](https://packagist.org/packages/noj/fabrica)
+[![Total Downloads](https://poser.pugx.org/noj/fabrica/downloads?format=flat-square)](https://packagist.org/packages/noj/fabrica)
 
 Fabrica handles the definition and creation of objects for use in testing.
 
