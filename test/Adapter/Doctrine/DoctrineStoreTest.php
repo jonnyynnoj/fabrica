@@ -21,7 +21,8 @@ class DoctrineStoreTest extends TestCase
 		setUp as createSchema;
 	}
 
-	protected function setUp()
+	/** @before */
+	protected function initDoctrine()
 	{
 		$entityManager = EntityManagerFactory::createSQLiteInMemory([__DIR__ . '/../../Entities']);
 		Fabrica::setStore(new DoctrineStore($entityManager));
