@@ -2,23 +2,14 @@
 
 namespace Noj\Fabrica\Adapter\Doctrine\PHPUnit;
 
-use Noj\Fabrica\Adapter\Doctrine\SchemaManager;
-use Noj\Fabrica\Fabrica;
+if (version_compare(\PHPUnit\Runner\Version::id(), '8.0.0', '<')) {
+	class_alias(DatabaseFixturesForVersion7AndPrevious::class, DatabaseFixturesSetup::class);
+} else {
+	class_alias(DatabaseFixturesForVersion8AndLater::class, DatabaseFixturesSetup::class);
+}
 
 trait DatabaseFixtures
 {
 	use DatabaseAssertions;
-
-	protected function setUp()
-	{
-		SchemaManager::create(Fabrica::getEntityManager());
-	}
-
-	protected function tearDown()
-	{
-		$entityManager = Fabrica::getEntityManager();
-
-		SchemaManager::truncate($entityManager);
-		$entityManager->clear();
-	}
+	use DatabaseFixturesSetup;
 }

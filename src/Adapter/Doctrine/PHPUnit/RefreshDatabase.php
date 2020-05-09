@@ -11,11 +11,11 @@ class RefreshDatabase implements BeforeTestHook, AfterTestHook
 
 	public function executeBeforeTest(string $test): void
 	{
-		$this->create();
+		$this->setUp();
 	}
 
 	public function executeAfterTest(string $test, float $time): void
 	{
-		$this->truncate();
+		$this->tearDown();
 	}
 }
