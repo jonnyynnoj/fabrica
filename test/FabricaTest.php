@@ -3,6 +3,7 @@
 namespace Noj\Fabrica\Test;
 
 use Noj\Fabrica\Fabrica;
+use Noj\Fabrica\FabricaException;
 use Noj\Fabrica\Test\Entities\Post;
 use Noj\Fabrica\Test\Entities\SuperUser;
 use Noj\Fabrica\Test\Entities\User;
@@ -45,13 +46,12 @@ class FabricaTest extends TestCase
 		self::assertEquals('User', $user->getLastName());
 	}
 
-	/**
-	 * @test
-	 * @expectedException \Noj\Fabrica\FabricaException
-	 * @expectedExceptionMessage No definition found for Noj\Fabrica\Test\Entities\User
-	 */
+	/** @test */
 	public function it_handles_trying_to_create_undefined_entity()
 	{
+		$this->expectException(FabricaException::class);
+		$this->expectExceptionMessage('No definition found for Noj\Fabrica\Test\Entities\User:default. Did you forget to define it?');
+
 		Fabrica::create(User::class);
 	}
 
