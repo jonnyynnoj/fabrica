@@ -14,7 +14,7 @@ class FabricaTest extends TestCase
 
 	protected function setUp()
 	{
-		Fabrica::setStore();
+		Fabrica::reset();
 	}
 
 	/** @test */
@@ -46,7 +46,7 @@ class FabricaTest extends TestCase
 
 	/**
 	 * @test
-	 * @expectedException Noj\Fabrica\FabricaException
+	 * @expectedException \Noj\Fabrica\FabricaException
 	 * @expectedExceptionMessage No definition found for Noj\Fabrica\Test\Entities\User
 	 */
 	public function it_handles_trying_to_create_undefined_entity()

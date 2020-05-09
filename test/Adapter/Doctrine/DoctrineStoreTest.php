@@ -1,22 +1,32 @@
 <?php declare(strict_types=1);
 
-namespace Noj\Fabrica\Test\Integration\Doctrine;
+namespace Noj\Fabrica\Test\Adapter\Doctrine;
 
+use Noj\Fabrica\Adapter\Doctrine\DoctrineStore;
+use Noj\Fabrica\Adapter\Doctrine\EntityManagerFactory;
+use Noj\Fabrica\Adapter\Doctrine\PHPUnit\DatabaseFixtures;
 use Noj\Fabrica\Fabrica;
-use Noj\Fabrica\Adapter\Doctrine\PHPUnit\DatabaseAssertions;
 use Noj\Fabrica\Test\Entities\Address;
 use Noj\Fabrica\Test\Entities\Post;
 use Noj\Fabrica\Test\Entities\User;
 use Noj\Fabrica\Test\TestEntities;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class DoctrineStoreTest extends TestCase
 {
-	use DatabaseAssertions, TestEntities;
+	use DatabaseFixtures, TestEntities {
+		setUp as createSchema;
+	}
 
 	protected function setUp()
 	{
-		Fabrica::reset();
+		$entityManager = EntityManagerFactory::createSQLiteInMemory([__DIR__ . '/../../entities']);
+		Fabrica::setStore(new DoctrineStore($entityManager));
+
+		$this->createSchema();
 	}
 
 	/** @test */

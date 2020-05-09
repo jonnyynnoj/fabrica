@@ -9,14 +9,12 @@ trait DatabaseFixtures
 {
 	use DatabaseAssertions;
 
-	/** @before */
-	protected function create()
+	protected function setUp()
 	{
 		SchemaManager::create(Fabrica::getEntityManager());
 	}
 
-	/** @after */
-	protected function truncate()
+	protected function tearDown()
 	{
 		$entityManager = Fabrica::getEntityManager();
 

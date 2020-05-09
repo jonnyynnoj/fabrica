@@ -11,7 +11,7 @@ class FabricaException extends Exception
 		return new self("No definition found for $class:$type. Did you forget to define it?");
 	}
 
-	public static function doctrineNotConfigured()
+	public static function doctrineNotConfigured(): self
 	{
 		return new self("Cannot retrieve the EntityManager as Fabrica isn't configured with a DoctrineStore");
 	}
