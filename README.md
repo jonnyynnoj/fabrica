@@ -33,9 +33,10 @@ composer require noj/fabrica --dev
 
 ### Setup
 
-First initialise Fabrica somewhere within your test suite. For PHPUnit, this can be done using the `bootstrap` option:
+First initialise Fabrica somewhere within your test suite. For PHPUnit, this can be done using the [bootstrap](https://phpunit.readthedocs.io/en/9.1/organizing-tests.html?highlight=bootstrap#composing-a-test-suite-using-xml-configuration) option:
 ```php
-require '../vendor/autoload.php';
+<?php
+require 'vendor/autoload.php';
 Fabrica::loadFactories([__DIR__ . '/factories']);
 ```
 
@@ -57,9 +58,9 @@ Now within your test, you can create a new `User` instance:
 $user = Fabrica::create(User::class);
 
 // Check properties have been set
-self::assertEquals('user123', $user->username);
-self::assertEquals('Test', $user->firstName);
-self::assertEquals('User', $user->lastName);
+assertEquals('user123', $user->username);
+assertEquals('Test', $user->firstName);
+assertEquals('User', $user->lastName);
 ```
 
 ### Setters
@@ -104,10 +105,10 @@ $user = Fabrica::create(User::class, function () {
     ];
 });
 
-self::assertEquals('user1223', $user->username);
-self::assertEquals('Another', $user->firstName);
-self::assertEquals('User', $user->lastName);
-self::assertEquals(24, $user->getAge());
+assertEquals('user1223', $user->username);
+assertEquals('Another', $user->firstName);
+assertEquals('User', $user->lastName);
+assertEquals(24, $user->getAge());
 ```
 
 ### Create Multiple
@@ -137,8 +138,8 @@ Whenever a `Comment` is created it will have an associated `User`:
 ```php
 $comment = Fabrica::create(Comment::class);
 
-self::assertInstanceOf(User::class, $comment->user);
-self::assertEquals('user123', $comment->user->username);
+assertInstanceOf(User::class, $comment->user);
+assertEquals('user123', $comment->user->username);
 ```
 
 You can also define the inverse side of the relation. For example, you can define that each created `User` should have an associated `Comment`:
@@ -191,8 +192,8 @@ $comment = Fabrica::create(Comment::class, function () {
     ];
 });
 
-self::assertEquals('user123', $comment->user->username);
-self::assertEquals('John', $comment->user->firstName);
+assertEquals('user123', $comment->user->username);
+assertEquals('John', $comment->user->firstName);
 ```
 
 For a single entity of a one-to-many relation:
@@ -204,8 +205,8 @@ $user = Fabrica::create(User::class, function () {
     ];
 });
 
-self::assertEquals('A test comment', $user->comments[0]->title);
-self::assertEquals('Only the 2nd comment has this title', $user->comments[1]->title);
+assertEquals('A test comment', $user->comments[0]->title);
+assertEquals('Only the 2nd comment has this title', $user->comments[1]->title);
 ```
 
 Or even every entity:
@@ -218,7 +219,7 @@ $user = Fabrica::create(User::class, function () {
 });
 
 foreach ($user->comments as $comment) {
-    self::assertEquals('Each comment now has this title', $comment->title);
+    assertEquals('Each comment now has this title', $comment->title);
 }
 ```
 
@@ -254,9 +255,9 @@ Fabrica::define(User::class, function () {
 })->type('banned')->extends(User::class);
 
 $bannedUser = Fabrica::create(User::class, 'banned');
-self::assertEquals('bannedUser', $bannedUser->username);
-self::assertEquals('Test', $bannedUser->firstName);
-self::assertEquals('User', $bannedUser->lastName);
+assertEquals('bannedUser', $bannedUser->username);
+assertEquals('Test', $bannedUser->firstName);
+assertEquals('User', $bannedUser->lastName);
 ```
 
 You can also extend from a sub-type:
