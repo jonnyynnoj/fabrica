@@ -1,6 +1,6 @@
 # Fabrica
 
-![Travis (.com)](https://img.shields.io/travis/com/jonnyynnoj/fabrica?style=flat-square)
+[![Travis (.com)](https://img.shields.io/travis/com/jonnyynnoj/fabrica?style=flat-square)](https://travis-ci.com/github/jonnyynnoj/fabrica)
 [![Latest Stable Version](https://poser.pugx.org/noj/fabrica/v/stable?format=flat-square)](https://packagist.org/packages/noj/fabrica)
 [![Total Downloads](https://poser.pugx.org/noj/fabrica/downloads?format=flat-square)](https://packagist.org/packages/noj/fabrica)
 [![License](https://poser.pugx.org/noj/fabrica/license?format=flat-square)](https://packagist.org/packages/noj/fabrica)
