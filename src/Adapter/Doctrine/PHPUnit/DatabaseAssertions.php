@@ -40,6 +40,11 @@ trait DatabaseAssertions
 		return $repository->findOneBy($criteria);
 	}
 
+	protected static function findAll($entity)
+	{
+		return self::getRepository($entity)->findAll();
+	}
+
 	protected static function getRepository(string $class)
 	{
 		$entityManager = Fabrica::getEntityManager();
