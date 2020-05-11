@@ -5,14 +5,14 @@ namespace Noj\Fabrica\Adapter\Doctrine\PHPUnit;
 use Noj\Fabrica\Adapter\Doctrine\SchemaManager;
 use Noj\Fabrica\Fabrica;
 
-trait DatabaseFixturesForVersion7AndPrevious
+trait NeedsDatabaseHooksForVersion8AndLater
 {
-	protected function setUp()
+	protected function setUp(): void
 	{
 		SchemaManager::create(Fabrica::getEntityManager());
 	}
 
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		$entityManager = Fabrica::getEntityManager();
 

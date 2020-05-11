@@ -4,7 +4,7 @@ namespace Noj\Fabrica\Test\Adapter\Doctrine;
 
 use Noj\Fabrica\Adapter\Doctrine\DoctrineStore;
 use Noj\Fabrica\Adapter\Doctrine\EntityManagerFactory;
-use Noj\Fabrica\Adapter\Doctrine\PHPUnit\DatabaseFixtures;
+use Noj\Fabrica\Adapter\Doctrine\PHPUnit\NeedsDatabase;
 use Noj\Fabrica\Fabrica;
 use Noj\Fabrica\Test\Entities\Address;
 use Noj\Fabrica\Test\Entities\Post;
@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 class DoctrineStoreTest extends TestCase
 {
-	use DatabaseFixtures, TestEntities {
+	use NeedsDatabase, TestEntities {
 		setUp as createSchema;
 	}
 

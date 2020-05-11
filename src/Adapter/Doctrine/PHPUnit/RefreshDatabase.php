@@ -7,7 +7,7 @@ use PHPUnit\Runner\BeforeTestHook;
 
 class RefreshDatabase implements BeforeTestHook, AfterTestHook
 {
-	use DatabaseFixtures;
+	use NeedsDatabase;
 
 	public function executeBeforeTest(string $test): void
 	{
