@@ -8,6 +8,10 @@
 
 Fabrica handles the definition and creation of objects for use in testing.
 
+Coupled with its Doctrine integration, Fabrica allows you to fully test CRUD logic without mocking. See the [What Problem Does it Solve?](https://github.com/jonnyynnoj/fabrica/wiki/What-Problem-Does-it-Solve%3F) page for a full explanation.
+
+___
+
 - [Installing](#installing)
 - [Usage](#usage)
     - [Setup](#setup)
