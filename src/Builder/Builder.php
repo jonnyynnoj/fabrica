@@ -17,7 +17,7 @@ class Builder
 
 	/** @var Result[] */
 	private static $created = [];
-	private static $createdStack = [];
+	private static $stackCount = 0;
 
 	public function __construct(string $class, Definition $definition)
 	{
@@ -37,7 +37,7 @@ class Builder
 		return $this;
 	}
 
-	public function onComplete(callable $onComplete)
+	public function onComplete(callable $onComplete): self
 	{
 		$this->onComplete[] = $onComplete;
 		return $this;
@@ -51,31 +51,29 @@ class Builder
 			}
 
 			return array_map(function () use ($overrides) {
-				return $this->createEntity($overrides);
+				return $this->createEntity($overrides, false);
 			}, range(1, $this->instances));
 		} catch (Throwable $throwable) {
 			self::$created = [];
-			self::$createdStack = [];
+			self::$stackCount = 0;
 			throw $throwable;
 		}
 	}
 
-	private function createEntity(callable $overrides = null)
+	private function createEntity(callable $overrides = null, bool $useCache = true)
 	{
-		if (isset(self::$createdStack[$this->class])) {
-			return self::$createdStack[$this->class];
+		if ($useCache && isset(self::$created[$this->class])) {
+			return self::$created[$this->class]->entity;
 		}
 
 		$entity = new $this->class;
-		self::$created[] = new Result($this->definition, $entity);
-		self::$createdStack[$this->class] = $entity;
+		self::$created[$this->class] = new Result($this->definition, $entity);
+		++self::$stackCount;
 
 		$attributes = $this->definition->getAttributes($overrides, ...$this->defineArguments);
 		set($entity, $attributes);
 
-		unset(self::$createdStack[$this->class]);
-
-		if (empty(self::$createdStack)) {
+		if (--self::$stackCount === 0) {
 			$this->cleanUp();
 		}
 

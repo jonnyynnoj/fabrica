@@ -183,11 +183,7 @@ class FabricaTest extends TestCase
 
 		$post = Fabrica::create(Post::class, function () {
 			return [
-				'user' => Fabrica::create(User::class, function () {
-					return [
-						'firstName' => 'Overridden'
-					];
-				})
+				'user.firstName' => 'Overridden'
 			];
 		});
 
