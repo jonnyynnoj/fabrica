@@ -9,14 +9,16 @@ trait NeedsDatabaseHooksForVersion8AndLater
 {
 	protected function setUp(): void
 	{
-		SchemaManager::create(Fabrica::getEntityManager());
+		$entityManager = Fabrica::getEntityManager();
+
+		SchemaManager::create($entityManager);
+		$entityManager->beginTransaction();
 	}
 
 	protected function tearDown(): void
 	{
 		$entityManager = Fabrica::getEntityManager();
-
-		SchemaManager::truncate($entityManager);
+		$entityManager->rollback();
 		$entityManager->clear();
 	}
 }

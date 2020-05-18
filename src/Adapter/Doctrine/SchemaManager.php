@@ -17,15 +17,4 @@ class SchemaManager
 			self::$created = true;
 		}
 	}
-
-	public static function truncate(EntityManager $entityManager)
-	{
-		$connection = $entityManager->getConnection();
-		$platform = $connection->getDatabasePlatform();
-		$tables = $connection->getSchemaManager()->listTables();
-
-		foreach ($tables as $table) {
-			$connection->executeUpdate($platform->getTruncateTableSQL($table->getName()));
-		}
-	}
 }
