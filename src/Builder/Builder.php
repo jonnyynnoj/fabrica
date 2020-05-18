@@ -62,7 +62,7 @@ class Builder
 
 	private function createEntity(callable $overrides = null, bool $useCache = true)
 	{
-		if ($useCache && isset(self::$created[$this->class])) {
+		if (!$overrides && $useCache && isset(self::$created[$this->class])) {
 			return self::$created[$this->class]->entity;
 		}
 
