@@ -34,14 +34,14 @@ class Fabrica
 			->create($overrides);
 	}
 
-	public static function createMany(string $class, int $amount, callable $overrides = null)
+	public static function createMany(string $class, int $amount, ?callable $overrides = null)
 	{
 		return self::of($class)
 			->instances($amount)
 			->create($overrides);
 	}
 
-	public static function createType(string $class, string $type, callable $overrides = null)
+	public static function createType(string $class, string $type, ?callable $overrides = null)
 	{
 		return self::of($class, $type)
 			->create($overrides);

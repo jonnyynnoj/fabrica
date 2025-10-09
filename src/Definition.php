@@ -20,7 +20,7 @@ class Definition
 	/** @var string */
 	public $type = self::DEFAULT_TYPE;
 
-	public function __construct(string $class, callable $defaults = null)
+	public function __construct(string $class, ?callable $defaults = null)
 	{
 		$this->class = $class;
 		$this->defaults = $defaults ?? function() {
@@ -30,7 +30,7 @@ class Definition
 		$this->onCreated([$this, 'applyCallableProperties']);
 	}
 
-	public function getAttributes(callable $overrides = null, ...$args): array
+	public function getAttributes(?callable $overrides = null, ...$args): array
 	{
 		$parentAttributes = $this->parent ? $this->parent->getAttributes(null, ...$args) : [];
 
