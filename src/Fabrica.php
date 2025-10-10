@@ -50,9 +50,7 @@ class Fabrica
 		return (new Builder($class, Registry::get($class, $type)))
 			->defineArguments(self::$defineArguments)
 			->onComplete(function (array $results) {
-				if (self::$store) {
-					self::$store->save($results);
-				}
+				self::$store?->save($results);
 			});
 	}
 

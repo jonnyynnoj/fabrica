@@ -28,7 +28,7 @@ class Definition
 
 	public function getAttributes(?\Closure $overrides = null, ...$args): array
 	{
-		$parentAttributes = $this->parent ? $this->parent->getAttributes(null, ...$args) : [];
+		$parentAttributes = $this->parent?->getAttributes(null, ...$args) ?? [];
 
 		return $this->attributes = array_merge(
 			$parentAttributes,
