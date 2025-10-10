@@ -37,13 +37,13 @@ class Builder
 		return $this;
 	}
 
-	public function onComplete(callable $onComplete): self
+	public function onComplete(\Closure $onComplete): self
 	{
 		$this->onComplete[] = $onComplete;
 		return $this;
 	}
 
-	public function create(?callable $overrides = null)
+	public function create(?\Closure $overrides = null)
 	{
 		try {
 			if ($this->instances === 1) {
@@ -60,7 +60,7 @@ class Builder
 		}
 	}
 
-	private function createEntity(?callable $overrides = null, bool $useCache = true)
+	private function createEntity(?\Closure $overrides = null, bool $useCache = true)
 	{
 		if (!$overrides && $useCache && isset(self::$created[$this->class])) {
 			return self::$created[$this->class]->entity;

@@ -4,15 +4,12 @@ namespace Noj\Fabrica;
 
 class CallableProperty
 {
-	private $callable;
-
-	public function __construct(callable $callable)
+	public function __construct(private \Closure $closure)
 	{
-		$this->callable = $callable;
 	}
 
 	public function apply($entity)
 	{
-		return ($this->callable)($entity);
+		return ($this->closure)($entity);
 	}
 }

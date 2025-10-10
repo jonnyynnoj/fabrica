@@ -19,7 +19,7 @@ class Fabrica
 	/** @var StoreInterface|null */
 	private static $store;
 
-	public static function define(string $class, callable $attributes): Definition
+	public static function define(string $class, \Closure $attributes): Definition
 	{
 		$definition = new Definition($class, $attributes);
 		return Registry::register($definition);
@@ -34,14 +34,14 @@ class Fabrica
 			->create($overrides);
 	}
 
-	public static function createMany(string $class, int $amount, ?callable $overrides = null)
+	public static function createMany(string $class, int $amount, ?\Closure $overrides = null)
 	{
 		return self::of($class)
 			->instances($amount)
 			->create($overrides);
 	}
 
-	public static function createType(string $class, string $type, ?callable $overrides = null)
+	public static function createType(string $class, string $type, ?\Closure $overrides = null)
 	{
 		return self::of($class, $type)
 			->create($overrides);
@@ -58,7 +58,7 @@ class Fabrica
 			});
 	}
 
-	public static function call(callable $callable): CallableProperty
+	public static function call(\Closure $callable): CallableProperty
 	{
 		return new CallableProperty($callable);
 	}

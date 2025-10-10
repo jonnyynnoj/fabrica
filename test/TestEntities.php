@@ -8,7 +8,7 @@ use Noj\Fabrica\Test\Entities\User;
 
 trait TestEntities
 {
-	private function defineUser(?callable $definition = null)
+	private function defineUser(?\Closure $definition = null)
 	{
 		Fabrica::define(User::class, function () use ($definition) {
 			return array_merge([
@@ -19,7 +19,7 @@ trait TestEntities
 		});
 	}
 
-	private function definePost(?callable $definition = null)
+	private function definePost(?\Closure $definition = null)
 	{
 		return Fabrica::define(Post::class, function () use ($definition) {
 			return array_merge([

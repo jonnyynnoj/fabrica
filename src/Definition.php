@@ -20,17 +20,17 @@ class Definition
 	/** @var string */
 	public $type = self::DEFAULT_TYPE;
 
-	public function __construct(string $class, ?callable $defaults = null)
+	public function __construct(string $class, ?\Closure $defaults = null)
 	{
 		$this->class = $class;
 		$this->defaults = $defaults ?? function() {
 			return [];
 		};
 
-		$this->onCreated([$this, 'applyCallableProperties']);
+		$this->onCreated(\Closure::fromCallable([$this, 'applyCallableProperties']));
 	}
 
-	public function getAttributes(?callable $overrides = null, ...$args): array
+	public function getAttributes(?\Closure $overrides = null, ...$args): array
 	{
 		$parentAttributes = $this->parent ? $this->parent->getAttributes(null, ...$args) : [];
 
@@ -50,7 +50,7 @@ class Definition
 		}
 	}
 
-	public function onCreated(callable $callback): self
+	public function onCreated(\Closure $callback): self
 	{
 		$this->callbacks[] = $callback;
 		return $this;
