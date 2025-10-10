@@ -19,10 +19,7 @@ class Definition
 
 	public function __construct(public string $class, ?\Closure $defaults = null)
 	{
-		$this->defaults = $defaults ?? function() {
-			return [];
-		};
-
+		$this->defaults = $defaults ?? static fn() => [];
 		$this->onCreated(\Closure::fromCallable([$this, 'applyCallableProperties']));
 	}
 

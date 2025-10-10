@@ -45,9 +45,10 @@ class Builder
 				return $this->createEntity($overrides);
 			}
 
-			return array_map(function () use ($overrides) {
-				return $this->createEntity($overrides, false);
-			}, range(1, $this->instances));
+			return array_map(
+				fn() => $this->createEntity($overrides, false),
+				range(1, $this->instances)
+			);
 		} catch (Throwable $throwable) {
 			self::$created = [];
 			self::$stackCount = 0;

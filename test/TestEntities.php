@@ -10,13 +10,17 @@ trait TestEntities
 {
 	private function defineUser(?\Closure $definition = null)
 	{
-		Fabrica::define(User::class, function () use ($definition) {
-			return array_merge([
-				'firstName' => 'Test',
-				'lastName' => 'User',
-				'age' => 36,
-			], $definition ? $definition() : []);
-		});
+		Fabrica::define(
+			User::class,
+			fn() => array_merge(
+				[
+					'firstName' => 'Test',
+					'lastName' => 'User',
+					'age' => 36,
+				],
+				$definition ? $definition() : []
+			))
+		;
 	}
 
 	private function definePost(?\Closure $definition = null)

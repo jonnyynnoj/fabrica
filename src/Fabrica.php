@@ -49,9 +49,7 @@ class Fabrica
 	{
 		return (new Builder($class, Registry::get($class, $type)))
 			->defineArguments(self::$defineArguments)
-			->onComplete(function (array $results) {
-				self::$store?->save($results);
-			});
+			->onComplete(fn(array $results) => self::$store?->save($results));
 	}
 
 	public static function call(\Closure $callable): CallableProperty
@@ -61,9 +59,7 @@ class Fabrica
 
 	public static function property(string $path): CallableProperty
 	{
-		return self::call(function ($entity) use ($path) {
-			return get($entity, $path);
-		});
+		return self::call(static fn($entity) => get($entity, $path));
 	}
 
 	public static function loadFactories(array $paths): void
