@@ -7,9 +7,9 @@ use Doctrine\ORM\Tools\SchemaTool;
 
 class SchemaManager
 {
-	private static $created = false;
+	private static bool $created = false;
 
-	public static function create(EntityManager $entityManager)
+	public static function create(EntityManager $entityManager): void
 	{
 		if (!self::$created) {
 			$metaData = $entityManager->getMetadataFactory()->getAllMetadata();

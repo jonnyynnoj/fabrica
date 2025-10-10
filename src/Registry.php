@@ -5,9 +5,9 @@ namespace Noj\Fabrica;
 class Registry
 {
 	/** @var Definition[][] */
-	private static $defined = [];
+	private static array $defined = [];
 
-	public static function clear()
+	public static function clear(): void
 	{
 		self::$defined = [];
 	}

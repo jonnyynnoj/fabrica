@@ -4,5 +4,5 @@ namespace Noj\Fabrica\Adapter;
 
 interface StoreInterface
 {
-	public function save(array $results);
+	public function save(array $results): void;
 }

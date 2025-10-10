@@ -6,23 +6,19 @@ use function Noj\Dot\set;
 
 class Definition
 {
-	const DEFAULT_TYPE = 'default';
+	public const DEFAULT_TYPE = 'default';
 
-	private $defaults;
-	private $callbacks = [];
-	private $attributes = [];
+	private \Closure $defaults;
+	private array $attributes = [];
+	private ?Definition $parent = null;
 
-	/** @var null|Definition */
-	private $parent;
+	/** @var \Closure[] */
+	private array $callbacks = [];
 
-	public $class;
+	public string $type = self::DEFAULT_TYPE;
 
-	/** @var string */
-	public $type = self::DEFAULT_TYPE;
-
-	public function __construct(string $class, ?\Closure $defaults = null)
+	public function __construct(public string $class, ?\Closure $defaults = null)
 	{
-		$this->class = $class;
 		$this->defaults = $defaults ?? function() {
 			return [];
 		};
@@ -41,7 +37,7 @@ class Definition
 		);
 	}
 
-	private function applyCallableProperties($entity)
+	private function applyCallableProperties(object $entity): void
 	{
 		foreach ($this->attributes as $attribute => $value) {
 			if ($value instanceof CallableProperty) {

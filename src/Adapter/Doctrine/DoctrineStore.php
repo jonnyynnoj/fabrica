@@ -8,17 +8,14 @@ use Noj\Fabrica\Builder\Result;
 
 class DoctrineStore implements StoreInterface
 {
-	public $entityManager;
-
-	public function __construct(EntityManager $entityManager)
+	public function __construct(public EntityManager $entityManager)
 	{
-		$this->entityManager = $entityManager;
 	}
 
 	/**
 	 * @param Result[] $results
 	 */
-	public function save(array $results)
+	public function save(array $results): void
 	{
 		foreach ($results as $result) {
 			$metaData = $this->entityManager->getClassMetadata($result->definition->class);

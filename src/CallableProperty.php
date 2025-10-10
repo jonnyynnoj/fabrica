@@ -8,7 +8,7 @@ class CallableProperty
 	{
 	}
 
-	public function apply($entity)
+	public function apply(object $entity): mixed
 	{
 		return ($this->closure)($entity);
 	}

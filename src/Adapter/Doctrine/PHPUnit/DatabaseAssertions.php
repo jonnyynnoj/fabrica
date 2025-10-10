@@ -3,24 +3,25 @@
 namespace Noj\Fabrica\Adapter\Doctrine\PHPUnit;
 
 use Doctrine\Common\Util\Debug;
+use Doctrine\ORM\EntityRepository;
 use Noj\Fabrica\Fabrica;
 use PHPUnit\Framework\Assert;
 
 trait DatabaseAssertions
 {
-	protected static function assertDatabaseContainsEntity(string $class, array $criteria = [])
+	protected static function assertDatabaseContainsEntity(string $class, array $criteria = []): ?object
 	{
 		$entity = self::findDatabaseEntity($class, $criteria);
 		Assert::assertNotNull($entity, self::doesntContainMessage($class, $criteria));
 		return $entity;
 	}
 
-	protected static function assertDatabaseDoesNotContainEntity(string $class, array $criteria = [])
+	protected static function assertDatabaseDoesNotContainEntity(string $class, array $criteria = []): void
 	{
 		Assert::assertNull(self::findDatabaseEntity($class, $criteria));
 	}
 
-	protected static function assertDatabaseContainsEntities(string $class, int $amount, array $criteria = [])
+	protected static function assertDatabaseContainsEntities(string $class, int $amount, array $criteria = []): void
 	{
 		Assert::assertCount(
 			$amount,
@@ -29,23 +30,22 @@ trait DatabaseAssertions
 		);
 	}
 
-	protected static function assertDatabaseContainsExactlyOneEntity(string $class, array $criteria = [])
+	protected static function assertDatabaseContainsExactlyOneEntity(string $class, array $criteria = []): void
 	{
 		self::assertDatabaseContainsEntities($class, 1, $criteria);
 	}
 
-	protected static function findDatabaseEntity(string $class, array $criteria = [])
+	protected static function findDatabaseEntity(string $class, array $criteria = []): ?object
 	{
-		$repository = self::getRepository($class);
-		return $repository->findOneBy($criteria);
+		return self::getRepository($class)->findOneBy($criteria);
 	}
 
-	protected static function findAll($entity)
+	protected static function findAll($entity): array
 	{
 		return self::getRepository($entity)->findAll();
 	}
 
-	protected static function getRepository(string $class)
+	protected static function getRepository(string $class): EntityRepository
 	{
 		$entityManager = Fabrica::getEntityManager();
 		$entityManager->clear();

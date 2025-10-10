@@ -14,10 +14,8 @@ use function Noj\Dot\get;
 
 class Fabrica
 {
-	private static $defineArguments = [];
-
-	/** @var StoreInterface|null */
-	private static $store;
+	private static array $defineArguments = [];
+	private static ?StoreInterface $store = null;
 
 	public static function define(string $class, \Closure $attributes): Definition
 	{
@@ -25,7 +23,7 @@ class Fabrica
 		return Registry::register($definition);
 	}
 
-	public static function create(string $class, ...$args)
+	public static function create(string $class, ...$args): object
 	{
 		$type = $args && is_string($args[0]) ? array_shift($args) : Definition::DEFAULT_TYPE;
 		$overrides = $args && is_callable($args[0]) ? $args[0] : null;
@@ -34,14 +32,14 @@ class Fabrica
 			->create($overrides);
 	}
 
-	public static function createMany(string $class, int $amount, ?\Closure $overrides = null)
+	public static function createMany(string $class, int $amount, ?\Closure $overrides = null): array
 	{
 		return self::of($class)
 			->instances($amount)
 			->create($overrides);
 	}
 
-	public static function createType(string $class, string $type, ?\Closure $overrides = null)
+	public static function createType(string $class, string $type, ?\Closure $overrides = null): object
 	{
 		return self::of($class, $type)
 			->create($overrides);
@@ -70,7 +68,7 @@ class Fabrica
 		});
 	}
 
-	public static function loadFactories(array $paths)
+	public static function loadFactories(array $paths): void
 	{
 		foreach ($paths as $path) {
 			$directory = new RecursiveDirectoryIterator($path);
@@ -84,12 +82,12 @@ class Fabrica
 		}
 	}
 
-	public static function addDefineArgument($argument)
+	public static function addDefineArgument($argument): void
 	{
 		self::$defineArguments[] = $argument;
 	}
 
-	public static function setStore(StoreInterface $store)
+	public static function setStore(StoreInterface $store): void
 	{
 		self::$store = $store;
 	}
@@ -103,7 +101,7 @@ class Fabrica
 		return self::$store->entityManager;
 	}
 
-	public static function reset()
+	public static function reset(): void
 	{
 		Registry::clear();
 	}
