@@ -3,36 +3,34 @@
 namespace Noj\Fabrica\Test\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Noj\Fabrica\Test\Entities\Post;
 
-/**
- * @Entity
- * @Table(name="users")
- */
+#[ORM\Entity]
+#[ORM\Table('users')]
 class User
 {
-	/**
-	 * @Id
-	 * @Column(type="integer")
-	 * @GeneratedValue
-	 */
+	#[ORM\Id]
+	#[ORM\Column(type: 'integer')]
+	#[ORM\GeneratedValue]
 	public $id;
 
-	/** @Column(name="first_name") */
+	#[ORM\Column("first_name")]
 	public $firstName = '';
 
-	/** @Column(name="last_name") */
+	#[ORM\Column("last_name")]
 	public $lastName = '';
 
-	/** @Column */
+	#[ORM\Column]
 	public $age;
 
-	/** @Embedded(class = "Address") */
+	#[ORM\Embedded(Address::class)]
 	public $address;
 	
-	/** @Column */
+	#[ORM\Column]
 	public $banned = false;
 
-	/** @OneToMany(targetEntity="Noj\Fabrica\Test\Entities\Post", mappedBy="user", cascade={"persist", "remove"}) */
+	#[ORM\OneToMany("user", Post::class, ['persist', 'remove'])]
 	public $posts;
 
 	public function __construct()

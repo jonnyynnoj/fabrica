@@ -2,26 +2,25 @@
 
 namespace Noj\Fabrica\Test\Entities;
 
-/**
- * @Entity
- * @Table(name="posts")
- */
+use Doctrine\ORM\Mapping as ORM;
+use Noj\Fabrica\Test\Entities\User;
+
+#[ORM\Entity]
+#[ORM\Table('posts')]
 class Post
 {
-	/**
-	 * @Id
-	 * @Column(type="integer")
-	 * @GeneratedValue
-	 */
+	#[ORM\Id]
+	#[ORM\Column(type: 'integer')]
+	#[ORM\GeneratedValue]
 	public $id;
 
-	/** @ManyToOne(targetEntity="Noj\Fabrica\Test\Entities\User", inversedBy="posts", cascade={"persist", "remove"}) */
+	#[ORM\ManyToOne(User::class, ["persist", "remove"], inversedBy: "posts")]
 	public $user;
 
-	/** @Column */
+	#[ORM\Column]
 	public $title;
 
-	/** @Column */
+	#[ORM\Column]
 	public $body;
 
 	public $userFirstName;

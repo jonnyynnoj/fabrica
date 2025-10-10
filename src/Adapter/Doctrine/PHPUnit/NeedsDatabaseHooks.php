@@ -5,9 +5,9 @@ namespace Noj\Fabrica\Adapter\Doctrine\PHPUnit;
 use Noj\Fabrica\Adapter\Doctrine\SchemaManager;
 use Noj\Fabrica\Fabrica;
 
-trait NeedsDatabaseHooksForVersion7AndPrevious
+trait NeedsDatabaseHooks
 {
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$entityManager = Fabrica::getEntityManager();
 
@@ -15,7 +15,7 @@ trait NeedsDatabaseHooksForVersion7AndPrevious
 		$entityManager->beginTransaction();
 	}
 
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		$entityManager = Fabrica::getEntityManager();
 		$entityManager->rollback();
