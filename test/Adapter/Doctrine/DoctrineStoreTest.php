@@ -47,9 +47,10 @@ class DoctrineStoreTest extends TestCase
 	public function it_can_create_many_to_one_relation()
 	{
 		$this->defineUser();
-		$this->definePost(function () {
-			return ['user' => Fabrica::create(User::class)];
-		});
+
+		$this->definePost(fn() => [
+			'user' => Fabrica::create(User::class)
+		]);
 
 		Fabrica::create(Post::class);
 
@@ -67,12 +68,13 @@ class DoctrineStoreTest extends TestCase
 	/** @test */
 	public function it_can_create_one_to_many_relation()
 	{
-		$this->definePost(function () {
-			return ['user' => Fabrica::create(User::class)];
-		});
-		$this->defineUser(function () {
-			return ['@addPost' => Fabrica::create(Post::class)];
-		});
+		$this->definePost(fn() => [
+			'user' => Fabrica::create(User::class)
+		]);
+
+		$this->defineUser(fn() => [
+			'@addPost' => Fabrica::create(Post::class)
+		]);
 
 		$user = Fabrica::create(User::class);
 
@@ -85,13 +87,13 @@ class DoctrineStoreTest extends TestCase
 	/** @test */
 	public function it_can_create_multiple_relations()
 	{
-		$this->defineUser(function () {
-			return ['@addPost*' => Fabrica::createMany(Post::class, 3)];
-		});
+		$this->defineUser(fn() => [
+			'@addPost*' => Fabrica::createMany(Post::class, 3)
+		]);
 
-		$this->definePost(function () {
-			return ['user' => Fabrica::create(User::class)];
-		});
+		$this->definePost(fn() => [
+			'user' => Fabrica::create(User::class)
+		]);
 
 		$user = Fabrica::create(User::class);
 
@@ -101,17 +103,15 @@ class DoctrineStoreTest extends TestCase
 	/** @test */
 	public function it_can_handle_embeddable()
 	{
-		$this->defineUser(function () {
-			return ['address' => Fabrica::create(Address::class)];
-		});
+		$this->defineUser(fn() => [
+			'address' => Fabrica::create(Address::class)
+		]);
 
-		Fabrica::define(Address::class, function () {
-			return [
-				'street' => '1 Test Street',
-				'city' => 'Test City',
-				'country' => 'Test'
-			];
-		});
+		Fabrica::define(Address::class, fn() => [
+			'street' => '1 Test Street',
+			'city' => 'Test City',
+			'country' => 'Test'
+		]);
 
 		Fabrica::create(User::class);
 

@@ -33,12 +33,10 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_define_and_create_a_factory_using_methods()
 	{
-		Fabrica::define(User::class, function () {
-			return [
-				'@setFirstName' => 'Test',
-				'@setLastName' => 'User',
-			];
-		});
+		Fabrica::define(User::class, fn() => [
+			'@setFirstName' => 'Test',
+			'@setLastName' => 'User',
+		]);
 
 		$user = Fabrica::create(User::class);
 
@@ -58,20 +56,16 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_override_definition_when_creating()
 	{
-		Fabrica::define(User::class, function () {
-			return [
-				'firstName' => 'Test',
-				'@setLastName' => 'User',
-				'age' => 47
-			];
-		});
+		Fabrica::define(User::class, fn() => [
+			'firstName' => 'Test',
+			'@setLastName' => 'User',
+			'age' => 47
+		]);
 
-		$user = Fabrica::create(User::class, function () {
-			return [
-				'@setFirstName' => 'Another',
-				'lastName' => 'Person',
-			];
-		});
+		$user = Fabrica::create(User::class, fn() => [
+			'@setFirstName' => 'Another',
+			'lastName' => 'Person',
+		]);
 
 		self::assertEquals('Another', $user->firstName);
 		self::assertEquals('Person', $user->lastName);
@@ -99,14 +93,12 @@ class FabricaTest extends TestCase
 	public function it_can_call_setter_for_each_element_of_array()
 	{
 		$this->definePost();
-		Fabrica::define(User::class, function () {
-			return [
-				'firstName' => 'Test',
-				'@setLastName' => 'User',
-				'age' => 47,
-				'@addPost*' => Fabrica::createMany(Post::class, 3)
-			];
-		});
+		Fabrica::define(User::class, fn() => [
+			'firstName' => 'Test',
+			'@setLastName' => 'User',
+			'age' => 47,
+			'@addPost*' => Fabrica::createMany(Post::class, 3)
+		]);
 
 		$user = Fabrica::create(User::class);
 
@@ -122,21 +114,17 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_create_relation()
 	{
-		$this->definePost(function () {
-			return ['user' => Fabrica::create(User::class)];
-		});
+		$this->definePost(fn() => [
+			'user' => Fabrica::create(User::class)
+		]);
 
-		Fabrica::define(User::class, function () {
-			return [
-				'@addPost' => Fabrica::create(Post::class)
-			];
-		});
+		Fabrica::define(User::class, fn() => [
+			'@addPost' => Fabrica::create(Post::class)
+		]);
 
-		$user = Fabrica::create(User::class, function () {
-			return [
-				'posts.0.title' => 'My new post'
-			];
-		});
+		$user = Fabrica::create(User::class, fn() => [
+			'posts.0.title' => 'My new post'
+		]);
 
 		self::assertCount(1, $user->posts);
 		self::assertInstanceOf(Post::class, $user->posts[0]);
@@ -147,17 +135,13 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_handle_cyclical_references()
 	{
-		Fabrica::define(User::class, function () {
-			return [
-				'@addPost' => Fabrica::create(Post::class)
-			];
-		});
+		Fabrica::define(User::class, fn() => [
+			'@addPost' => Fabrica::create(Post::class)
+		]);
 
-		Fabrica::define(Post::class, function () {
-			return [
-				'user' => Fabrica::create(User::class)
-			];
-		});
+		Fabrica::define(Post::class, fn() => [
+			'user' => Fabrica::create(User::class)
+		]);
 
 		$user = Fabrica::create(User::class);
 
@@ -169,23 +153,17 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_handle_overridden_cyclical_references()
 	{
-		$this->defineUser(function () {
-			return [
-				'@addPost' => Fabrica::create(Post::class)
-			];
-		});
+		$this->defineUser(fn() => [
+			'@addPost' => Fabrica::create(Post::class)
+		]);
 
-		Fabrica::define(Post::class, function () {
-			return [
-				'user' => Fabrica::create(User::class)
-			];
-		});
+		Fabrica::define(Post::class, fn() => [
+			'user' => Fabrica::create(User::class)
+		]);
 
-		$post = Fabrica::create(Post::class, function () {
-			return [
-				'user.firstName' => 'Overridden'
-			];
-		});
+		$post = Fabrica::create(Post::class, fn() => [
+			'user.firstName' => 'Overridden'
+		]);
 
 		self::assertEquals('Overridden', $post->user->firstName);
 		self::assertCount(1, $post->user->posts);
@@ -219,11 +197,9 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_fire_on_created_callback_for_child_entities()
 	{
-		$this->defineUser(function () {
-			return [
-				'@addPost' => Fabrica::create(Post::class)
-			];
-		});
+		$this->defineUser(fn() => [
+			'@addPost' => Fabrica::create(Post::class)
+		]);
 
 		$this->definePost()->onCreated(function (Post $post) {
 			self::assertEquals('My first post', $post->title);
@@ -237,12 +213,10 @@ class FabricaTest extends TestCase
 	{
 		$this->defineUser();
 
-		Fabrica::define(Post::class, function () {
-			return [
-				'user' => Fabrica::create(User::class),
-				'userFirstName' => Fabrica::property('user.firstName')
-			];
-		});
+		Fabrica::define(Post::class, fn() => [
+			'user' => Fabrica::create(User::class),
+			'userFirstName' => Fabrica::property('user.firstName')
+		]);
 
 		$post = Fabrica::create(Post::class);
 		self::assertEquals($post->userFirstName, $post->user->firstName);
@@ -251,22 +225,18 @@ class FabricaTest extends TestCase
 	/** @test */
 	public function it_can_set_property_to_same_as_overridden_relation_property()
 	{
-		$this->defineUser(function () {
-			return [
-				'@addPost' => Fabrica::create(Post::class)
-			];
-		});
+		$this->defineUser(fn() => [
+			'@addPost' => Fabrica::create(Post::class)
+		]);
 
-		Fabrica::define(Post::class, function () {
-			return [
-				'user' => Fabrica::create(User::class),
-				'userFirstName' => Fabrica::property('user.firstName')
-			];
-		});
+		Fabrica::define(Post::class, fn() => [
+			'user' => Fabrica::create(User::class),
+			'userFirstName' => Fabrica::property('user.firstName')
+		]);
 
-		$user = Fabrica::create(User::class, function () {
-			return ['firstName' => 'changed'];
-		});
+		$user = Fabrica::create(User::class, fn() => [
+			'firstName' => 'changed'
+		]);
 
 		self::assertEquals('changed', $user->firstName);
 		self::assertEquals('changed', $user->posts[0]->user->firstName);
@@ -278,13 +248,11 @@ class FabricaTest extends TestCase
 	{
 		$this->defineUser();
 
-		Fabrica::define(User::class, function () {
-			return [
-				'firstName' => 'Banned',
-				'lastName' => 'User',
-				'banned' => true
-			];
-		})->type('banned');
+		Fabrica::define(User::class, fn() => [
+			'firstName' => 'Banned',
+			'lastName' => 'User',
+			'banned' => true
+		])->type('banned');
 
 		$user = Fabrica::create(User::class);
 		$bannedUser = Fabrica::create(User::class, 'banned');
@@ -303,21 +271,17 @@ class FabricaTest extends TestCase
 	{
 		$this->defineUser();
 
-		Fabrica::define(User::class, function () {
-			return [
-				'banned' => true
-			];
-		})->type('banned')->extends(User::class);
+		Fabrica::define(User::class, fn() => ['banned' => true])
+			->type('banned')
+			->extends(User::class);
 
-		Fabrica::define(User::class, function () {
-			return [
-				'firstName' => 'Banned'
-			];
-		})->type('banned2')->extends(User::class, 'banned');
+		Fabrica::define(User::class, fn() => ['firstName' => 'Banned'])
+			->type('banned2')
+			->extends(User::class, 'banned');
 
-		$user = Fabrica::create(User::class, 'banned2', function () {
-			return ['age' => 28];
-		});
+		$user = Fabrica::create(User::class, 'banned2', fn() => [
+			'age' => 28
+		]);
 
 		self::assertEquals('Banned', $user->firstName);
 		self::assertEquals('User', $user->lastName);
@@ -330,17 +294,12 @@ class FabricaTest extends TestCase
 	{
 		$this->defineUser();
 
-		Fabrica::define(SuperUser::class, function () {
-			return [
-				'age' => 72
-			];
-		})->extends(User::class);
+		Fabrica::define(SuperUser::class, fn() => ['age' => 72])
+			->extends(User::class);
 
-		$superUser = Fabrica::create(SuperUser::class, function () {
-			return [
-				'firstName' => 'Super'
-			];
-		});
+		$superUser = Fabrica::create(SuperUser::class, fn() => [
+			'firstName' => 'Super'
+		]);
 
 		self::assertEquals('Super', $superUser->firstName);
 		self::assertEquals('User', $superUser->lastName);

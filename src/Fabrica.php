@@ -14,18 +14,16 @@ use function Noj\Dot\get;
 
 class Fabrica
 {
-	private static $defineArguments = [];
+	private static array $defineArguments = [];
+	private static ?StoreInterface $store = null;
 
-	/** @var StoreInterface|null */
-	private static $store;
-
-	public static function define(string $class, callable $attributes): Definition
+	public static function define(string $class, \Closure $attributes): Definition
 	{
 		$definition = new Definition($class, $attributes);
 		return Registry::register($definition);
 	}
 
-	public static function create(string $class, ...$args)
+	public static function create(string $class, ...$args): object
 	{
 		$type = $args && is_string($args[0]) ? array_shift($args) : Definition::DEFAULT_TYPE;
 		$overrides = $args && is_callable($args[0]) ? $args[0] : null;
@@ -34,14 +32,14 @@ class Fabrica
 			->create($overrides);
 	}
 
-	public static function createMany(string $class, int $amount, callable $overrides = null)
+	public static function createMany(string $class, int $amount, ?\Closure $overrides = null): array
 	{
 		return self::of($class)
 			->instances($amount)
 			->create($overrides);
 	}
 
-	public static function createType(string $class, string $type, callable $overrides = null)
+	public static function createType(string $class, string $type, ?\Closure $overrides = null): object
 	{
 		return self::of($class, $type)
 			->create($overrides);
@@ -51,26 +49,20 @@ class Fabrica
 	{
 		return (new Builder($class, Registry::get($class, $type)))
 			->defineArguments(self::$defineArguments)
-			->onComplete(function (array $results) {
-				if (self::$store) {
-					self::$store->save($results);
-				}
-			});
+			->onComplete(fn(array $results) => self::$store?->save($results));
 	}
 
-	public static function call(callable $callable): CallableProperty
+	public static function call(\Closure $callable): CallableProperty
 	{
 		return new CallableProperty($callable);
 	}
 
 	public static function property(string $path): CallableProperty
 	{
-		return self::call(function ($entity) use ($path) {
-			return get($entity, $path);
-		});
+		return self::call(static fn($entity) => get($entity, $path));
 	}
 
-	public static function loadFactories(array $paths)
+	public static function loadFactories(array $paths): void
 	{
 		foreach ($paths as $path) {
 			$directory = new RecursiveDirectoryIterator($path);
@@ -84,12 +76,12 @@ class Fabrica
 		}
 	}
 
-	public static function addDefineArgument($argument)
+	public static function addDefineArgument($argument): void
 	{
 		self::$defineArguments[] = $argument;
 	}
 
-	public static function setStore(StoreInterface $store)
+	public static function setStore(StoreInterface $store): void
 	{
 		self::$store = $store;
 	}
@@ -103,7 +95,7 @@ class Fabrica
 		return self::$store->entityManager;
 	}
 
-	public static function reset()
+	public static function reset(): void
 	{
 		Registry::clear();
 	}

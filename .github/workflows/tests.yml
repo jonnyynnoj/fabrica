@@ -1,0 +1,39 @@
+name: Unit Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    name: Unit Tests
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        include:
+          - php: '8.0'
+          - php: '8.1'
+          - php: '8.2'
+          - php: '8.3'
+          - php: '8.4'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ./vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('**/composer.json') }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: "none"
+          php-version: "${{ matrix.php }}"
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Test
+        run: |
+          composer test

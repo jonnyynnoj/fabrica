@@ -8,21 +8,16 @@ use function Noj\Dot\set;
 
 class Builder
 {
-	private $class;
-	private $definition;
-	private $instances = 1;
-	private $defineArguments = [];
-
-	private $onComplete = [];
+	private int $instances = 1;
+	private array $defineArguments = [];
+	private array $onComplete = [];
 
 	/** @var Result[] */
-	private static $created = [];
-	private static $stackCount = 0;
+	private static array $created = [];
+	private static int $stackCount = 0;
 
-	public function __construct(string $class, Definition $definition)
+	public function __construct(private string $class, private Definition $definition)
 	{
-		$this->class = $class;
-		$this->definition = $definition;
 	}
 
 	public function instances(int $instances): self
@@ -37,22 +32,23 @@ class Builder
 		return $this;
 	}
 
-	public function onComplete(callable $onComplete): self
+	public function onComplete(\Closure $onComplete): self
 	{
 		$this->onComplete[] = $onComplete;
 		return $this;
 	}
 
-	public function create(callable $overrides = null)
+	public function create(?\Closure $overrides = null): array|object
 	{
 		try {
 			if ($this->instances === 1) {
 				return $this->createEntity($overrides);
 			}
 
-			return array_map(function () use ($overrides) {
-				return $this->createEntity($overrides, false);
-			}, range(1, $this->instances));
+			return array_map(
+				fn() => $this->createEntity($overrides, false),
+				range(1, $this->instances)
+			);
 		} catch (Throwable $throwable) {
 			self::$created = [];
 			self::$stackCount = 0;
@@ -60,7 +56,7 @@ class Builder
 		}
 	}
 
-	private function createEntity(callable $overrides = null, bool $useCache = true)
+	private function createEntity(?\Closure $overrides = null, bool $useCache = true): object
 	{
 		if (!$overrides && $useCache && isset(self::$created[$this->class])) {
 			return self::$created[$this->class]->entity;
@@ -80,7 +76,7 @@ class Builder
 		return $entity;
 	}
 
-	private function cleanUp()
+	private function cleanUp(): void
 	{
 		foreach (self::$created as $result) {
 			$result->definition->fireCallbacks($result->entity, ...$this->defineArguments);

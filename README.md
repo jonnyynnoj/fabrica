@@ -50,13 +50,11 @@ Fabrica::loadFactories([__DIR__ . '/factories']);
 
 Assuming that you have a `User` entity, create a new factory `factories/UserFactory.php`:
 ```php
-Fabrica::define(User::class, function () {
-    return [
-        'username' => 'user123',
-        'firstName' => 'Test',
-        'lastName' => 'User',
-    ];
-});
+Fabrica::define(User::class, fn() => [
+    'username' => 'user123',
+    'firstName' => 'Test',
+    'lastName' => 'User',
+]);
 ```
 
 Now within your test, you can create a new `User` instance:
@@ -73,13 +71,11 @@ assertEquals('User', $user->lastName);
 
 If your entity's properties are only accessible through setters then you can use the `@` syntax to call methods instead:
 ```php
-Fabrica::define(User::class, function () {
-    return [
-        '@setUsername' => 'user123',
-        '@setFirstName' => 'Test',
-        '@setLastName' => 'User',
-    ];
-});
+Fabrica::define(User::class, fn() => [
+    '@setUsername' => 'user123',
+    '@setFirstName' => 'Test',
+    '@setLastName' => 'User',
+]);
 ```
 
 Given that a value is an array, you can indicate that you wish the method to be called for each item using the multiple times suffix (`*`):
@@ -94,22 +90,18 @@ You can override any default values when creating your entity:
 
 ```php
 /// UserFactory.php
-Fabrica::define(User::class, function () {
-    return [
-        'username' => 'user123',
-        'firstName' => 'Test',
-        'lastName' => 'User',
-        '@setAge' => 47,
-    ];
-});
+Fabrica::define(User::class, fn() => [
+    'username' => 'user123',
+    'firstName' => 'Test',
+    'lastName' => 'User',
+    '@setAge' => 47,
+]);
 
 /// UserTest.php
-$user = Fabrica::create(User::class, function () {
-    return [
-        'firstName' => 'Another',
-        '@setAge' => 24,
-    ];
-});
+$user = Fabrica::create(User::class, fn() => [
+    'firstName' => 'Another',
+    '@setAge' => 24,
+]);
 
 assertEquals('user1223', $user->username);
 assertEquals('Another', $user->firstName);
@@ -130,13 +122,11 @@ $users = Fabrica::createMany(User::class, 3);
 You can automatically create related entities. For example, if you have `Comment` entity that belongs to a `User` then you can define a factory:
 
 ```php
-Fabrica::define(Comment::class, function () {
-    return [
-        'title' => 'A test comment',
-        'body' => 'This is a test',
-        'author' => Fabrica::create(User::class),
-    ];
-});
+Fabrica::define(Comment::class, fn() => [
+    'title' => 'A test comment',
+    'body' => 'This is a test',
+    'author' => Fabrica::create(User::class),
+]);
 ```
 
 Whenever a `Comment` is created it will have an associated `User`:
@@ -151,40 +141,34 @@ assertEquals('user123', $comment->user->username);
 You can also define the inverse side of the relation. For example, you can define that each created `User` should have an associated `Comment`:
 
 ```php
-Fabrica::define(User::class, function () {
-    return [
-        '@setUsername' => 'user123',
-        '@setFirstName' => 'Test',
-        '@setLastName' => 'User',
-        '@addComment' => Fabrica::create(Comment::class)
-    ];
-});
+Fabrica::define(User::class, fn() => [
+    '@setUsername' => 'user123',
+    '@setFirstName' => 'Test',
+    '@setLastName' => 'User',
+    '@addComment' => Fabrica::create(Comment::class)
+]);
 ```
 
 You can create multiple child relations:
 
 ```php
-Fabrica::define(User::class, function () {
-    return [
-        'comments' => Fabrica::createMany(Comment::class, 3),
+Fabrica::define(User::class, fn() => [
+    'comments' => Fabrica::createMany(Comment::class, 3),
 
-        // or if you have a setter method, use the `*` suffix to call the method
-        // once for each element of the array
-        '@addComment*' => Fabrica::createMany(Comment::class, 3),
-    ];
-});
+    // or if you have a setter method, use the `*` suffix to call the method
+    // once for each element of the array
+    '@addComment*' => Fabrica::createMany(Comment::class, 3),
+]);
 ```
 Will create a `User` with 3 `Comments`.
 
 If the entity has a property that depends on the relation then you can define this like so:
 
 ```php
-Fabrica::define(Comment::class, function () {
-    return [
-        'user' => Fabrica::create(User::class),
-        'userFirstName' => Fabrica::property('user.firstName'),
-    ];
-});
+Fabrica::define(Comment::class, fn() => [
+    'user' => Fabrica::create(User::class),
+    'userFirstName' => Fabrica::property('user.firstName'),
+]);
 ```
 
 #### Overriding Relation Properties
@@ -192,11 +176,9 @@ Fabrica::define(Comment::class, function () {
 You can also override properties of nested relations when creating an entity:
 
 ```php
-$comment = Fabrica::create(Comment::class, function () {
-    return [
-        'author.firstName' => 'John'
-    ];
-});
+$comment = Fabrica::create(Comment::class, fn() => [
+    'author.firstName' => 'John'
+]);
 
 assertEquals('user123', $comment->user->username);
 assertEquals('John', $comment->user->firstName);
@@ -205,11 +187,9 @@ assertEquals('John', $comment->user->firstName);
 For a single entity of a one-to-many relation:
 
 ```php
-$user = Fabrica::create(User::class, function () {
-    return [
-        'comments.1.title' => 'Only the 2nd comment has this title'
-    ];
-});
+$user = Fabrica::create(User::class, fn() => [
+    'comments.1.title' => 'Only the 2nd comment has this title'
+]);
 
 assertEquals('A test comment', $user->comments[0]->title);
 assertEquals('Only the 2nd comment has this title', $user->comments[1]->title);
@@ -218,11 +198,9 @@ assertEquals('Only the 2nd comment has this title', $user->comments[1]->title);
 Or even every entity:
 
 ```php
-$user = Fabrica::create(User::class, function () {
-    return [
-        'comments.*.title' => 'Each comment now has this title'
-    ];
-});
+$user = Fabrica::create(User::class, fn() => [
+    'comments.*.title' => 'Each comment now has this title'
+]);
 
 foreach ($user->comments as $comment) {
     assertEquals('Each comment now has this title', $comment->title);
@@ -234,19 +212,19 @@ foreach ($user->comments as $comment) {
 Rather than always having to pass overrides when creating entities, you can define different types of entities:
 
 ```php
-Fabrica::define(User::class, function () {
-    return [
-        'username' => 'bannedUser',
-        'firstName' => 'Test',
-        'lastName' => 'User',
-    ];
-})->type('banned');
+Fabrica::define(User::class, fn() => [
+    'username' => 'bannedUser',
+    'firstName' => 'Test',
+    'lastName' => 'User',
+])->type('banned');
 
 $normalUser = Fabrica::create(User::class);
 $bannedUser = Fabrica::create(User::class, 'banned');
-$bannedUser2 = Fabrica::create(User::class, 'banned', function () {
-    return ['firstName' => 'banned'];
-});
+$bannedUser2 = Fabrica::create(
+    User::class,
+    'banned',
+    fn() => ['firstName' => 'banned'],
+);
 ```
 
 #### Extending
@@ -254,11 +232,9 @@ $bannedUser2 = Fabrica::create(User::class, 'banned', function () {
 If a sub-type shares attributes with the parent-type then you can specify that the factory extends from it:
 
 ```php
-Fabrica::define(User::class, function () {
-    return [
-        'username' => 'bannedUser'
-    ];
-})->type('banned')->extends(User::class);
+Fabrica::define(User::class, fn() => [
+    'username' => 'bannedUser'
+])->type('banned')->extends(User::class);
 
 $bannedUser = Fabrica::create(User::class, 'banned');
 assertEquals('bannedUser', $bannedUser->username);
@@ -269,11 +245,9 @@ assertEquals('User', $bannedUser->lastName);
 You can also extend from a sub-type:
 
 ```php
-Fabrica::define(User::class, function () {
-    return [
-        'permanent' => true
-    ];
-})->type('permaBanned')->extends(User::class, 'banned);
+Fabrica::define(User::class, fn() => [
+    'permanent' => true
+])->type('permaBanned')->extends(User::class, 'banned);
 ```
 
 ### Doctrine Integration
@@ -352,13 +326,11 @@ You will then receive the faker instance in the define callback:
 ```php
 use Faker\Generator as Faker;
 
-Fabrica::define(User::class, function (Faker $faker) {
-    return [
-        'firstName' => $faker->firstName,
-        'lastName' => $faker->lastName,
-        'email' => $faker->email,
-    ];
-});
+Fabrica::define(User::class, fn (Faker $faker) => [
+    'firstName' => $faker->firstName,
+    'lastName' => $faker->lastName,
+    'email' => $faker->email,
+]);
 ```
 
 ## Inspirations

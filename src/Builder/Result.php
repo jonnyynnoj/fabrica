@@ -6,12 +6,7 @@ use Noj\Fabrica\Definition;
 
 class Result
 {
-	public $definition;
-	public $entity;
-
-	public function __construct(Definition $definition, $entity)
+	public function __construct(public Definition $definition, public object $entity)
 	{
-		$this->definition = $definition;
-		$this->entity = $entity;
 	}
 }

@@ -2,12 +2,14 @@
 
 namespace Noj\Fabrica;
 
+use Noj\Dot\Dot;
+
 class Registry
 {
 	/** @var Definition[][] */
-	private static $defined = [];
+	private static array $defined = [];
 
-	public static function clear()
+	public static function clear(): void
 	{
 		self::$defined = [];
 	}
@@ -16,9 +18,7 @@ class Registry
 	{
 		$definition = current(array_filter(
 			self::$defined[$class] ?? [],
-			function (Definition $definition) use ($type) {
-				return $definition->type === $type;
-			}
+			static fn(Definition $definition) => $definition->type === $type
 		));
 
 		if (!$definition) {
