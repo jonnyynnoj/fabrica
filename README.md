@@ -247,7 +247,7 @@ You can also extend from a sub-type:
 ```php
 Fabrica::define(User::class, fn() => [
     'permanent' => true
-])->type('permaBanned')->extends(User::class, 'banned);
+])->type('permaBanned')->extends(User::class, 'banned');
 ```
 
 ### Doctrine Integration
