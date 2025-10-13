@@ -1,6 +1,6 @@
 # Fabrica
 
-[![Travis (.com)](https://img.shields.io/travis/com/jonnyynnoj/fabrica?style=flat-square)](https://travis-ci.com/github/jonnyynnoj/fabrica)
+![Pipeline](https://img.shields.io/github/actions/workflow/status/jonnyynnoj/fabrica/tests.yml?style=flat-square)
 [![Latest Stable Version](https://img.shields.io/packagist/v/noj/fabrica?style=flat-square)](https://packagist.org/packages/noj/fabrica)
 ![PHP Version Support](https://img.shields.io/packagist/php-v/noj/fabrica?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/jonnyynnoj/fabrica?style=flat-square)
