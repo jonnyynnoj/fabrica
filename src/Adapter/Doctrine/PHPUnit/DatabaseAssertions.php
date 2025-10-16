@@ -2,7 +2,6 @@
 
 namespace Noj\Fabrica\Adapter\Doctrine\PHPUnit;
 
-use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityRepository;
 use Noj\Fabrica\Fabrica;
 use PHPUnit\Framework\Assert;
@@ -12,7 +11,7 @@ trait DatabaseAssertions
 	protected static function assertDatabaseContainsEntity(string $class, array $criteria = []): ?object
 	{
 		$entity = self::findDatabaseEntity($class, $criteria);
-		Assert::assertNotNull($entity, self::doesntContainMessage($class, $criteria));
+		Assert::assertNotNull($entity, self::doesntContainMessage($class));
 		return $entity;
 	}
 
@@ -26,7 +25,7 @@ trait DatabaseAssertions
 		Assert::assertCount(
 			$amount,
 			self::getRepository($class)->findBy($criteria),
-			self::doesntContainMessage($class, $criteria)
+			self::doesntContainMessage($class)
 		);
 	}
 
@@ -52,9 +51,8 @@ trait DatabaseAssertions
 		return $entityManager->getRepository($class);
 	}
 
-	private static function doesntContainMessage(string $class, array $criteria): string
+	private static function doesntContainMessage(string $class): string
 	{
-		return "Database doesn't contain a {$class} with criteria:\n" .
-			Debug::dump($criteria, 2, true, false);
+		return "Database doesn't contain a {$class} matching the criteria";
 	}
 }

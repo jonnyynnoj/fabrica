@@ -30,7 +30,7 @@ class User
 	#[ORM\Column]
 	public $banned = false;
 
-	#[ORM\OneToMany("user", Post::class, ['persist', 'remove'])]
+	#[ORM\OneToMany(Post::class, 'user', ['persist', 'remove'])]
 	public $posts;
 
 	public function __construct()
