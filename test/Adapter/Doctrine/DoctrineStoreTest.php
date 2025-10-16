@@ -10,18 +10,19 @@ use Noj\Fabrica\Test\Entities\Address;
 use Noj\Fabrica\Test\Entities\Post;
 use Noj\Fabrica\Test\Entities\User;
 use Noj\Fabrica\Test\TestEntities;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @runTestsInSeparateProcesses
- */
+#[RunTestsInSeparateProcesses]
 class DoctrineStoreTest extends TestCase
 {
 	use NeedsDatabase, TestEntities {
 		setUp as createSchema;
 	}
 
-	/** @before */
+	#[Before]
 	protected function initDoctrine()
 	{
 		$entityManager = EntityManagerFactory::createSQLiteInMemory([__DIR__ . '/../../Entities']);
@@ -30,7 +31,7 @@ class DoctrineStoreTest extends TestCase
 		$this->createSchema();
 	}
 
-	/** @test */
+	#[Test]
 	public function it_saves_entity_to_database_on_creation()
 	{
 		$this->defineUser();
@@ -43,7 +44,7 @@ class DoctrineStoreTest extends TestCase
 		]);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_create_many_to_one_relation()
 	{
 		$this->defineUser();
@@ -65,7 +66,7 @@ class DoctrineStoreTest extends TestCase
 		]);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_create_one_to_many_relation()
 	{
 		$this->definePost(fn() => [
@@ -84,7 +85,7 @@ class DoctrineStoreTest extends TestCase
 		]);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_create_multiple_relations()
 	{
 		$this->defineUser(fn() => [
@@ -100,7 +101,7 @@ class DoctrineStoreTest extends TestCase
 		self::assertDatabaseContainsEntities(Post::class, 3, ['user' => $user]);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_handle_embeddable()
 	{
 		$this->defineUser(fn() => [

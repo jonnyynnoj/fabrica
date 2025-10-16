@@ -7,19 +7,21 @@ use Noj\Fabrica\FabricaException;
 use Noj\Fabrica\Test\Entities\Post;
 use Noj\Fabrica\Test\Entities\SuperUser;
 use Noj\Fabrica\Test\Entities\User;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class FabricaTest extends TestCase
 {
 	use TestEntities;
 
-	/** @before */
+	#[Before]
 	protected function reset()
 	{
 		Fabrica::reset();
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_define_and_create_a_factory_using_properties()
 	{
 		$this->defineUser();
@@ -30,7 +32,7 @@ class FabricaTest extends TestCase
 		self::assertEquals('User', $user->lastName);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_define_and_create_a_factory_using_methods()
 	{
 		Fabrica::define(User::class, fn() => [
@@ -44,7 +46,7 @@ class FabricaTest extends TestCase
 		self::assertEquals('User', $user->getLastName());
 	}
 
-	/** @test */
+	#[Test]
 	public function it_handles_trying_to_create_undefined_entity()
 	{
 		$this->expectException(FabricaException::class);
@@ -53,7 +55,7 @@ class FabricaTest extends TestCase
 		Fabrica::create(User::class);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_override_definition_when_creating()
 	{
 		Fabrica::define(User::class, fn() => [
@@ -72,7 +74,7 @@ class FabricaTest extends TestCase
 		self::assertSame(47, $user->age);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_create_multiple()
 	{
 		$this->defineUser();
@@ -89,7 +91,7 @@ class FabricaTest extends TestCase
 		}
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_call_setter_for_each_element_of_array()
 	{
 		$this->definePost();
@@ -111,7 +113,7 @@ class FabricaTest extends TestCase
 		}
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_create_relation()
 	{
 		$this->definePost(fn() => [
@@ -132,7 +134,7 @@ class FabricaTest extends TestCase
 		self::assertEquals('My new post', $user->posts[0]->title);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_handle_cyclical_references()
 	{
 		Fabrica::define(User::class, fn() => [
@@ -150,7 +152,7 @@ class FabricaTest extends TestCase
 		self::assertSame($user, $user->posts[0]->user);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_handle_overridden_cyclical_references()
 	{
 		$this->defineUser(fn() => [
@@ -171,7 +173,7 @@ class FabricaTest extends TestCase
 		self::assertSame($post->user, $post->user->posts[0]->user);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_set_callback_arguments()
 	{
 		Fabrica::addDefineArgument('an argument');
@@ -184,7 +186,7 @@ class FabricaTest extends TestCase
 		Fabrica::create(User::class);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_fire_on_created_callback()
 	{
 		$this->definePost()->onCreated(function (Post $post) {
@@ -194,7 +196,7 @@ class FabricaTest extends TestCase
 		Fabrica::create(Post::class);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_fire_on_created_callback_for_child_entities()
 	{
 		$this->defineUser(fn() => [
@@ -208,7 +210,7 @@ class FabricaTest extends TestCase
 		Fabrica::create(User::class);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_set_property_to_same_as_relation_property()
 	{
 		$this->defineUser();
@@ -222,7 +224,7 @@ class FabricaTest extends TestCase
 		self::assertEquals($post->userFirstName, $post->user->firstName);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_set_property_to_same_as_overridden_relation_property()
 	{
 		$this->defineUser(fn() => [
@@ -243,7 +245,7 @@ class FabricaTest extends TestCase
 		self::assertEquals('changed', $user->posts[0]->userFirstName);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_create_types_of_entities()
 	{
 		$this->defineUser();
@@ -266,7 +268,7 @@ class FabricaTest extends TestCase
 		self::assertTrue($bannedUser->banned);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_define_entity_that_extends_another()
 	{
 		$this->defineUser();
@@ -289,7 +291,7 @@ class FabricaTest extends TestCase
 		self::assertTrue($user->banned);
 	}
 
-	/** @test */
+	#[Test]
 	public function it_can_extend_different_class()
 	{
 		$this->defineUser();
